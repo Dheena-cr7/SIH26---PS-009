@@ -1,0 +1,52 @@
+[
+  {
+    "id": "GU-01",
+    "name": "Sausar Group Metasediments",
+    "type": "Metasediment",
+    "mn_potential": "High",
+    "area_km2": 8.5,
+    "lat": 21.65,
+    "lon": 79.82,
+    "age_ma": 1600
+  },
+  {
+    "id": "GU-02",
+    "name": "Gondwana Sedimentaries",
+    "type": "Sedimentary",
+    "mn_potential": "Low",
+    "area_km2": 12.3,
+    "lat": 21.9,
+    "lon": 79.55,
+    "age_ma": 250
+  },
+  {
+    "id": "GU-03",
+    "name": "Deccan Trap Basalt",
+    "type": "Volcanic",
+    "mn_potential": "Very Low",
+    "area_km2": 15.7,
+    "lat": 22.1,
+    "lon": 79.95,
+    "age_ma": 65
+  },
+  {
+    "id": "GU-04",
+    "name": "BIF-Shale Association",
+    "type": "BIF",
+    "mn_potential": "Very High",
+    "area_km2": 6.2,
+    "lat": 21.42,
+    "lon": 79.75,
+    "age_ma": 2000
+  },
+  {
+    "id": "GU-05",
+    "name": "Archaean Basement Complex",
+    "type": "Metamorphic",
+    "mn_potential": "Moderate",
+    "area_km2": 9.8,
+    "lat": 21.3,
+    "lon": 80.05,
+    "age_ma": 2800
+  }
+]

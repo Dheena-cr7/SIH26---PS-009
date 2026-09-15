@@ -1,0 +1,492 @@
+[
+  {
+    "id": "MN-TARGET-01",
+    "name": "Balaghat North Extension",
+    "lat": 22.05,
+    "lon": 80.18,
+    "prospectivity_score": 91,
+    "confidence": 84,
+    "priority": "VERY HIGH",
+    "area_km2": 3.2,
+    "estimated_depth_m": 45,
+    "spectral_score": 88,
+    "geological_score": 92,
+    "terrain_score": 76,
+    "historical_score": 87,
+    "feature_importance": {
+      "spectral_signature": 31,
+      "geology": 27,
+      "structural_proximity": 18,
+      "terrain": 12,
+      "historical_evidence": 12
+    },
+    "evidence": {
+      "satellite": "Strong",
+      "geological": "Strong",
+      "terrain": "Moderate",
+      "historical": "Strong"
+    },
+    "recommendation": "Prioritize exploratory drilling in this zone. High spectral anomaly and strong geological correlation.",
+    "mn_grade_estimate": 31.2,
+    "color": "#ef4444",
+    "polygon": [
+      [
+        22.04,
+        80.16
+      ],
+      [
+        22.04,
+        80.2
+      ],
+      [
+        22.06,
+        80.2
+      ],
+      [
+        22.06,
+        80.16
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-02",
+    "name": "Dongri Buzurg South",
+    "lat": 21.98,
+    "lon": 79.85,
+    "prospectivity_score": 83,
+    "confidence": 79,
+    "priority": "HIGH",
+    "area_km2": 2.8,
+    "estimated_depth_m": 60,
+    "spectral_score": 81,
+    "geological_score": 85,
+    "terrain_score": 72,
+    "historical_score": 80,
+    "feature_importance": {
+      "spectral_signature": 28,
+      "geology": 30,
+      "structural_proximity": 20,
+      "terrain": 11,
+      "historical_evidence": 11
+    },
+    "evidence": {
+      "satellite": "Strong",
+      "geological": "Strong",
+      "terrain": "Moderate",
+      "historical": "Moderate"
+    },
+    "recommendation": "Schedule geophysical survey and core drilling in Q1 next cycle.",
+    "mn_grade_estimate": 27.8,
+    "color": "#f97316",
+    "polygon": [
+      [
+        21.97,
+        79.83
+      ],
+      [
+        21.97,
+        79.87
+      ],
+      [
+        21.99,
+        79.87
+      ],
+      [
+        21.99,
+        79.83
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-03",
+    "name": "Ukwa Central",
+    "lat": 21.65,
+    "lon": 79.62,
+    "prospectivity_score": 76,
+    "confidence": 78,
+    "priority": "HIGH",
+    "area_km2": 4.1,
+    "estimated_depth_m": 55,
+    "spectral_score": 75,
+    "geological_score": 78,
+    "terrain_score": 68,
+    "historical_score": 74,
+    "feature_importance": {
+      "spectral_signature": 26,
+      "geology": 29,
+      "structural_proximity": 22,
+      "terrain": 12,
+      "historical_evidence": 11
+    },
+    "evidence": {
+      "satellite": "Moderate",
+      "geological": "Strong",
+      "terrain": "Moderate",
+      "historical": "Moderate"
+    },
+    "recommendation": "High potential zone. Geophysical anomaly confirmed by geological mapping.",
+    "mn_grade_estimate": 25.4,
+    "color": "#f97316",
+    "polygon": [
+      [
+        21.64,
+        79.6
+      ],
+      [
+        21.64,
+        79.64
+      ],
+      [
+        21.66,
+        79.64
+      ],
+      [
+        21.66,
+        79.6
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-04",
+    "name": "Kandri Northeast",
+    "lat": 21.42,
+    "lon": 79.38,
+    "prospectivity_score": 67,
+    "confidence": 72,
+    "priority": "MODERATE",
+    "area_km2": 2.4,
+    "estimated_depth_m": 75,
+    "spectral_score": 64,
+    "geological_score": 70,
+    "terrain_score": 60,
+    "historical_score": 62,
+    "feature_importance": {
+      "spectral_signature": 23,
+      "geology": 31,
+      "structural_proximity": 20,
+      "terrain": 14,
+      "historical_evidence": 12
+    },
+    "evidence": {
+      "satellite": "Moderate",
+      "geological": "Moderate",
+      "terrain": "Low",
+      "historical": "Moderate"
+    },
+    "recommendation": "Conduct detailed geological mapping before drilling investment.",
+    "mn_grade_estimate": 22.1,
+    "color": "#eab308",
+    "polygon": [
+      [
+        21.41,
+        79.36
+      ],
+      [
+        21.41,
+        79.4
+      ],
+      [
+        21.43,
+        79.4
+      ],
+      [
+        21.43,
+        79.36
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-05",
+    "name": "Chikla South Block",
+    "lat": 21.89,
+    "lon": 79.15,
+    "prospectivity_score": 58,
+    "confidence": 65,
+    "priority": "MODERATE",
+    "area_km2": 1.9,
+    "estimated_depth_m": 90,
+    "spectral_score": 55,
+    "geological_score": 62,
+    "terrain_score": 55,
+    "historical_score": 50,
+    "feature_importance": {
+      "spectral_signature": 21,
+      "geology": 28,
+      "structural_proximity": 25,
+      "terrain": 14,
+      "historical_evidence": 12
+    },
+    "evidence": {
+      "satellite": "Weak",
+      "geological": "Moderate",
+      "terrain": "Low",
+      "historical": "Weak"
+    },
+    "recommendation": "Lower priority. Include in next regional exploration program.",
+    "mn_grade_estimate": 19.8,
+    "color": "#eab308",
+    "polygon": [
+      [
+        21.88,
+        79.13
+      ],
+      [
+        21.88,
+        79.17
+      ],
+      [
+        21.9,
+        79.17
+      ],
+      [
+        21.9,
+        79.13
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-06",
+    "name": "Munsar West",
+    "lat": 22.14,
+    "lon": 79.52,
+    "prospectivity_score": 48,
+    "confidence": 60,
+    "priority": "LOW",
+    "area_km2": 1.5,
+    "estimated_depth_m": 100,
+    "spectral_score": 44,
+    "geological_score": 52,
+    "terrain_score": 45,
+    "historical_score": 40,
+    "feature_importance": {
+      "spectral_signature": 19,
+      "geology": 32,
+      "structural_proximity": 25,
+      "terrain": 13,
+      "historical_evidence": 11
+    },
+    "evidence": {
+      "satellite": "Weak",
+      "geological": "Moderate",
+      "terrain": "Low",
+      "historical": "Weak"
+    },
+    "recommendation": "Low immediate priority. Monitor for new geological survey data.",
+    "mn_grade_estimate": 16.5,
+    "color": "#22c55e",
+    "polygon": [
+      [
+        22.13,
+        79.5
+      ],
+      [
+        22.13,
+        79.54
+      ],
+      [
+        22.15,
+        79.54
+      ],
+      [
+        22.15,
+        79.5
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-07",
+    "name": "Tirodi Extension",
+    "lat": 21.75,
+    "lon": 79.98,
+    "prospectivity_score": 72,
+    "confidence": 74,
+    "priority": "HIGH",
+    "area_km2": 2.7,
+    "estimated_depth_m": 65,
+    "spectral_score": 70,
+    "geological_score": 74,
+    "terrain_score": 65,
+    "historical_score": 71,
+    "feature_importance": {
+      "spectral_signature": 27,
+      "geology": 28,
+      "structural_proximity": 21,
+      "terrain": 12,
+      "historical_evidence": 12
+    },
+    "evidence": {
+      "satellite": "Moderate",
+      "geological": "Strong",
+      "terrain": "Moderate",
+      "historical": "Moderate"
+    },
+    "recommendation": "Strong structural control evident. Recommend targeted drilling program.",
+    "mn_grade_estimate": 24.6,
+    "color": "#f97316",
+    "polygon": [
+      [
+        21.74,
+        79.96
+      ],
+      [
+        21.74,
+        80.0
+      ],
+      [
+        21.76,
+        80.0
+      ],
+      [
+        21.76,
+        79.96
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-08",
+    "name": "Gumgaon Block A",
+    "lat": 21.55,
+    "lon": 79.78,
+    "prospectivity_score": 42,
+    "confidence": 58,
+    "priority": "LOW",
+    "area_km2": 1.8,
+    "estimated_depth_m": 110,
+    "spectral_score": 40,
+    "geological_score": 45,
+    "terrain_score": 42,
+    "historical_score": 38,
+    "feature_importance": {
+      "spectral_signature": 20,
+      "geology": 30,
+      "structural_proximity": 26,
+      "terrain": 14,
+      "historical_evidence": 10
+    },
+    "evidence": {
+      "satellite": "Weak",
+      "geological": "Low",
+      "terrain": "Low",
+      "historical": "Weak"
+    },
+    "recommendation": "Insufficient evidence. Deprioritize for current exploration cycle.",
+    "mn_grade_estimate": 14.2,
+    "color": "#22c55e",
+    "polygon": [
+      [
+        21.54,
+        79.76
+      ],
+      [
+        21.54,
+        79.8
+      ],
+      [
+        21.56,
+        79.8
+      ],
+      [
+        21.56,
+        79.76
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-09",
+    "name": "Sitasaongi North",
+    "lat": 21.3,
+    "lon": 79.88,
+    "prospectivity_score": 88,
+    "confidence": 82,
+    "priority": "VERY HIGH",
+    "area_km2": 3.5,
+    "estimated_depth_m": 50,
+    "spectral_score": 85,
+    "geological_score": 90,
+    "terrain_score": 80,
+    "historical_score": 84,
+    "feature_importance": {
+      "spectral_signature": 30,
+      "geology": 28,
+      "structural_proximity": 17,
+      "terrain": 13,
+      "historical_evidence": 12
+    },
+    "evidence": {
+      "satellite": "Strong",
+      "geological": "Strong",
+      "terrain": "Strong",
+      "historical": "Strong"
+    },
+    "recommendation": "Critical priority. Drill intercepts from adjacent areas confirm strong potential.",
+    "mn_grade_estimate": 30.8,
+    "color": "#ef4444",
+    "polygon": [
+      [
+        21.29,
+        79.86
+      ],
+      [
+        21.29,
+        79.9
+      ],
+      [
+        21.31,
+        79.9
+      ],
+      [
+        21.31,
+        79.86
+      ]
+    ]
+  },
+  {
+    "id": "MN-TARGET-10",
+    "name": "Beldongri Southeast",
+    "lat": 22.22,
+    "lon": 80.05,
+    "prospectivity_score": 63,
+    "confidence": 68,
+    "priority": "MODERATE",
+    "area_km2": 2.1,
+    "estimated_depth_m": 80,
+    "spectral_score": 60,
+    "geological_score": 66,
+    "terrain_score": 58,
+    "historical_score": 62,
+    "feature_importance": {
+      "spectral_signature": 24,
+      "geology": 29,
+      "structural_proximity": 22,
+      "terrain": 13,
+      "historical_evidence": 12
+    },
+    "evidence": {
+      "satellite": "Moderate",
+      "geological": "Moderate",
+      "terrain": "Low",
+      "historical": "Moderate"
+    },
+    "recommendation": "Moderate potential. Consider soil geochemistry survey before drilling.",
+    "mn_grade_estimate": 21.5,
+    "color": "#eab308",
+    "polygon": [
+      [
+        22.21,
+        80.03
+      ],
+      [
+        22.21,
+        80.07
+      ],
+      [
+        22.23,
+        80.07
+      ],
+      [
+        22.23,
+        80.03
+      ]
+    ]
+  }
+]

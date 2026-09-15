@@ -1,0 +1,48 @@
+{
+  "prospectivity": {
+    "name": "Prospectivity Classifier",
+    "algorithm": "XGBoost",
+    "auc": 0.951,
+    "feature_importance": {
+      "spectral_signature": 24.200000762939453,
+      "geology": 25.200000762939453,
+      "structural_proximity": 15.800000190734863,
+      "terrain": 8.800000190734863,
+      "historical_evidence": 9.699999809265137,
+      "ndvi": 5.199999809265137,
+      "elevation": 5.699999809265137,
+      "slope": 5.400000095367432
+    }
+  },
+  "production": {
+    "name": "Production Forecast",
+    "algorithm": "XGBoost Regressor",
+    "r2": 0.786,
+    "features": [
+      "equipment_availability_pct",
+      "rainfall_mm",
+      "blasting_days_lost",
+      "haulage_delay_hrs",
+      "working_days",
+      "is_monsoon"
+    ]
+  },
+  "shortfall": {
+    "name": "Shortfall Risk Classifier",
+    "algorithm": "XGBoost",
+    "f1": 1.0,
+    "feature_importance": {
+      "equipment_availability_pct": 0.0,
+      "rainfall_mm": 0.0,
+      "blasting_days_lost": 0.0,
+      "haulage_delay_hrs": 0.0,
+      "working_days": 0.0,
+      "is_monsoon": 0.0
+    }
+  },
+  "equipment": {
+    "name": "Equipment Risk Classifier",
+    "algorithm": "XGBoost",
+    "accuracy": 0.95
+  }
+}
