@@ -1,54 +1,125 @@
-import React, { useState, useEffect } from 'react'
-import { Volume2, VolumeX, Play, Square, Sparkles, Mic, Radio } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react'
+import { Play, Square, Radio, Volume2, Sparkles, UserCheck } from 'lucide-react'
+
+const FEMALE_VOICE_KEYWORDS = [
+  'zira', 'jenny', 'aria', 'samantha', 'victoria', 'karen', 'moira',
+  'tessa', 'fiona', 'veena', 'hazel', 'catherine', 'susan', 'linda',
+  'ava', 'allison', 'stephanie', 'neerja', 'heera', 'swara', 'female',
+  'ana', 'emma', 'olivia', 'mia', 'charlotte', 'sofia', 'clara'
+]
 
 export default function AIVoiceBriefing() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isSupported, setIsSupported] = useState(true)
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([])
+  const [selectedVoiceName, setSelectedVoiceName] = useState<string>('')
+  const synthRef = useRef<SpeechSynthesis | null>(null)
 
-  const briefingText = `Welcome to Manganese Intelligence Situation Room. 
-  Geological prospectivity models integrated with Sentinel-2 and Landsat spectral data have delineated fourteen point eight million tonnes of estimated manganese resources in the central Sausar belt. 
-  Our production forecasting model predicts a sixty-eight percent probability of a twenty-two thousand tonne production shortfall next quarter, driven by monsoon haulage delays and excavator fleet degradation. 
-  Three prescriptive AI mitigation actions are active to recover up to nine point four percent capacity. 
-  All systems and Heavy Earth Moving telemetry are streaming live.`
+  const briefingText = `Welcome to OreSeek AI Situation Room. 
+Geological prospectivity models integrated with Sentinel-2 and Landsat spectral data have delineated fourteen point eight million tonnes of estimated manganese resources in the central Sausar belt. 
+Our production forecasting model predicts a sixty-eight percent probability of a twenty-two thousand tonne production shortfall next quarter, driven by monsoon haulage delays and excavator fleet degradation. 
+Three prescriptive AI mitigation actions are active to recover up to nine point four percent capacity. 
+All systems and Heavy Earth Moving telemetry are streaming live.`
+
+  // Helper to pick best female voice
+  const findBestFemaleVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null => {
+    if (!voices || voices.length === 0) return null
+
+    // 1. Check for explicit female English voices by keywords
+    const enVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en'))
+    
+    // Check highest quality natural/neural female voices first
+    const naturalFemale = enVoices.find(v => {
+      const name = v.name.toLowerCase()
+      return FEMALE_VOICE_KEYWORDS.some(kw => name.includes(kw)) && (name.includes('natural') || name.includes('neural') || name.includes('online'))
+    })
+    if (naturalFemale) return naturalFemale
+
+    // Check standard female english voices
+    const namedFemale = enVoices.find(v => {
+      const name = v.name.toLowerCase()
+      return FEMALE_VOICE_KEYWORDS.some(kw => name.includes(kw))
+    })
+    if (namedFemale) return namedFemale
+
+    // Check any voice with 'female' in name
+    const genericFemale = voices.find(v => v.name.toLowerCase().includes('female'))
+    if (genericFemale) return genericFemale
+
+    // Fallback to Google / Natural English or first English voice
+    const fallbackEn = enVoices.find(v => v.name.includes('Google') || v.name.includes('Natural')) || enVoices[0]
+    return fallbackEn || voices[0]
+  }
 
   useEffect(() => {
-    if (!('speechSynthesis' in window)) {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       setIsSupported(false)
+      return
+    }
+
+    synthRef.current = window.speechSynthesis
+
+    const updateVoices = () => {
+      if (!synthRef.current) return
+      const voices = synthRef.current.getVoices()
+      if (voices.length > 0) {
+        setAvailableVoices(voices)
+        const bestFemale = findBestFemaleVoice(voices)
+        if (bestFemale) {
+          setSelectedVoiceName(bestFemale.name)
+        }
+      }
+    }
+
+    updateVoices()
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = updateVoices
     }
 
     return () => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel()
+      if (synthRef.current) {
+        synthRef.current.cancel()
       }
     }
   }, [])
 
   const toggleSpeech = () => {
-    if (!('speechSynthesis' in window)) return
+    if (!synthRef.current) return
 
     if (isPlaying) {
-      window.speechSynthesis.cancel()
+      synthRef.current.cancel()
       setIsPlaying(false)
     } else {
-      window.speechSynthesis.cancel()
+      synthRef.current.cancel()
       const utterance = new SpeechSynthesisUtterance(briefingText)
-      utterance.rate = 1.05
-      utterance.pitch = 1.0
+      utterance.rate = 1.02
+      utterance.pitch = 1.10 // Slightly higher pitch for natural, clear feminine articulation
 
-      // Choose an English voice if available
-      const voices = window.speechSynthesis.getVoices()
-      const preferredVoice = voices.find(v => v.lang.includes('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Daniel') || v.name.includes('Samantha')))
-      if (preferredVoice) utterance.voice = preferredVoice
+      const allVoices = synthRef.current.getVoices()
+      const targetVoice = allVoices.find(v => v.name === selectedVoiceName) || findBestFemaleVoice(allVoices)
+      if (targetVoice) {
+        utterance.voice = targetVoice
+      }
 
       utterance.onend = () => setIsPlaying(false)
       utterance.onerror = () => setIsPlaying(false)
 
-      window.speechSynthesis.speak(utterance)
+      synthRef.current.speak(utterance)
       setIsPlaying(true)
     }
   }
 
   if (!isSupported) return null
+
+  // Filter female / natural english voices for optional user selection
+  const femaleVoiceOptions = availableVoices.filter(v => {
+    const name = v.name.toLowerCase()
+    return v.lang.toLowerCase().startsWith('en') && (
+      FEMALE_VOICE_KEYWORDS.some(kw => name.includes(kw)) ||
+      name.includes('google') ||
+      name.includes('natural')
+    )
+  })
 
   return (
     <div className="card p-3.5 bg-gradient-to-r from-bg-900 to-accent-orange/10 border-accent-orange/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
@@ -59,19 +130,46 @@ export default function AIVoiceBriefing() {
           <Radio className="w-5 h-5" />
         </div>
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-bold text-text-primary">AI Situation Room Audio Briefing</span>
-            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-accent-orange/20 text-accent-orange border border-accent-orange/30">
-              VOICE AI
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-pink-500/20 text-pink-400 border border-pink-500/30 flex items-center gap-1">
+              <Sparkles className="w-2.5 h-2.5" /> FEMALE AI VOICE
             </span>
+            {selectedVoiceName && (
+              <span className="text-[10px] text-text-muted border border-border/40 px-1.5 py-0.5 rounded bg-surface/50">
+                {selectedVoiceName.replace(/Microsoft|Google|Desktop|English/gi, '').trim()}
+              </span>
+            )}
           </div>
           <p className="text-[11px] text-text-muted mt-0.5">
-            {isPlaying ? 'Synthesizing live operational situation report...' : 'Listen to 30-second AI executive audio briefing for judges'}
+            {isPlaying ? 'Broadcasting live operational AI situation report (Executive Female Narrator)...' : 'Listen to 30-second AI executive audio briefing for judges & leadership'}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+        {/* Voice Selector if multiple female voices exist */}
+        {femaleVoiceOptions.length > 1 && (
+          <select
+            value={selectedVoiceName}
+            onChange={(e) => {
+              setSelectedVoiceName(e.target.value)
+              if (isPlaying && synthRef.current) {
+                synthRef.current.cancel()
+                setIsPlaying(false)
+              }
+            }}
+            className="text-[11px] bg-surface border border-border/60 text-text-secondary rounded px-2 py-1 outline-none focus:border-accent-orange"
+            title="Select Female Voice Profile"
+          >
+            {femaleVoiceOptions.map((v) => (
+              <option key={v.name} value={v.name}>
+                {v.name.length > 30 ? `${v.name.substring(0, 27)}...` : v.name}
+              </option>
+            ))}
+          </select>
+        )}
+
         {/* Animated Audio Equalizer Waveform */}
         {isPlaying && (
           <div className="flex items-center gap-1 h-5 px-2">
@@ -85,8 +183,8 @@ export default function AIVoiceBriefing() {
 
         <button
           onClick={toggleSpeech}
-          className={`btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 transition-all ${
-            isPlaying ? 'bg-red-500 hover:bg-red-600 text-white' : ''
+          className={`btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+            isPlaying ? 'bg-red-500 hover:bg-red-600 text-white shadow-red-500/20' : 'shadow-accent-orange/20'
           }`}
         >
           {isPlaying ? (
@@ -103,3 +201,4 @@ export default function AIVoiceBriefing() {
     </div>
   )
 }
+

@@ -40,25 +40,21 @@ export default function Landing() {
 
           {/* Title */}
           <h1 className="text-5xl md:text-7xl font-extrabold text-text-primary mb-4 leading-tight tracking-tight">
-            MANGANESE
-            <br />
-            <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #f97316, #f59e0b)' }}>
-              INTELLIGENCE
-            </span>
+            ORE<span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #f97316, #f59e0b)' }}>SEEK</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-text-secondary font-light mb-4">
-            AI + Space Technology for Smarter Mine Planning
+            AI + Space Technology for Smarter Mineral Exploration & Mine Planning
           </p>
 
           <p className="text-base text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed">
             An AI-powered decision-support platform combining Earth observation, geological intelligence
-            and mining operations analytics to improve manganese exploration and production planning.
+            and mining operations analytics to accelerate mineral discovery and optimize production.
           </p>
 
           {/* Tagline */}
           <div className="text-accent-orange font-semibold text-lg mb-12 italic">
-            "From Satellite Signals to Smarter Mining Decisions."
+            "OreSeek: From Satellite Signals to Smarter Mining Decisions."
           </div>
 
           {/* CTAs */}

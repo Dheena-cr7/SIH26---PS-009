@@ -154,7 +154,7 @@ def generate_drill_holes(n=200):
         })
     df = pd.DataFrame(records)
     df.to_csv(os.path.join(DATASETS_DIR, 'geology', 'drill_holes.csv'), index=False)
-    print(f"  ✓ drill_holes.csv ({len(df)} rows)")
+    print(f"  [OK] drill_holes.csv ({len(df)} rows)")
     return df
 
 def generate_production_history():
@@ -186,7 +186,7 @@ def generate_production_history():
         })
     df = pd.DataFrame(records)
     df.to_csv(os.path.join(DATASETS_DIR, 'production', 'production_history.csv'), index=False)
-    print(f"  ✓ production_history.csv ({len(df)} rows)")
+    print(f"  [OK] production_history.csv ({len(df)} rows)")
     return df
 
 def generate_equipment():
@@ -219,7 +219,7 @@ def generate_equipment():
             })
     with open(os.path.join(DATASETS_DIR, 'equipment', 'equipment.json'), 'w') as f:
         json.dump(machines, f, indent=2)
-    print(f"  ✓ equipment.json ({len(machines)} machines)")
+    print(f"  [OK] equipment.json ({len(machines)} machines)")
     return machines
 
 def generate_environment():
@@ -246,7 +246,7 @@ def generate_environment():
         })
     df = pd.DataFrame(records)
     df.to_csv(os.path.join(DATASETS_DIR, 'environment', 'environment.csv'), index=False)
-    print(f"  ✓ environment.csv ({len(df)} rows)")
+    print(f"  [OK] environment.csv ({len(df)} rows)")
     return df
 
 def generate_geology_units():
@@ -259,7 +259,7 @@ def generate_geology_units():
     ]
     with open(os.path.join(DATASETS_DIR, 'geology', 'geology_units.json'), 'w') as f:
         json.dump(units, f, indent=2)
-    print(f"  ✓ geology_units.json ({len(units)} units)")
+    print(f"  [OK] geology_units.json ({len(units)} units)")
     return units
 
 def generate_all():
@@ -272,7 +272,7 @@ def generate_all():
     zones = generate_prospectivity_zones()
     with open(os.path.join(DATASETS_DIR, 'geology', 'prospectivity_zones.json'), 'w') as f:
         json.dump(zones, f, indent=2)
-    print(f"  ✓ prospectivity_zones.json ({len(zones)} zones)")
+    print(f"  [OK] prospectivity_zones.json ({len(zones)} zones)")
 
     generate_drill_holes()
     generate_production_history()

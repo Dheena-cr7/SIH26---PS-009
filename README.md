@@ -1,5 +1,5 @@
-# 🌍 MANGANESE INTELLIGENCE — SIH 2026 Prototype
-### *AI & Space Technology for Identifying Manganese Reserves and Overcoming Production Shortfalls*
+# 🌍 OreSeek — SIH 2026 Prototype
+### *AI & Space Technology for Identifying Mineral Reserves and Overcoming Production Shortfalls*
 
 > **Problem Statement ID:** PS-26009  
 > **Organization:** Ministry of Steel | **Department/Industry:** MOIL Limited  
@@ -9,7 +9,7 @@
 
 ## 🚀 Overview
 
-**Manganese Intelligence** is an end-to-end AI and space-technology-driven decision-support platform designed for modern mineral exploration, geological prospectivity mapping, mine planning, and production optimization.
+**OreSeek** is an end-to-end AI and space-technology-driven decision-support platform designed for modern mineral exploration, geological prospectivity mapping, mine planning, and production optimization.
 
 ### Key Capabilities:
 1. **Space & Geological Prospectivity Engine:** Multi-criteria GIS mapping integrating Sentinel-2 spectral band ratios (Clay/Iron index, Alteration), magnetic/gravity anomalies, fault line proximity, and lithology.

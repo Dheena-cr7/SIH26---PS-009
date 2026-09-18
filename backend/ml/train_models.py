@@ -60,7 +60,7 @@ def train_prospectivity_model():
     importances = dict(zip(feature_names, [round(v * 100, 1) for v in model.feature_importances_]))
 
     metrics = {"auc": round(auc, 3), "feature_importance": importances}
-    print(f"  ✓ Prospectivity model — AUC: {auc:.3f}")
+    print(f"  [OK] Prospectivity model -- AUC: {auc:.3f}")
     return model, metrics
 
 
@@ -85,7 +85,7 @@ def train_production_forecast_model():
         pickle.dump((model, features), f)
 
     metrics = {"r2": round(r2, 3), "features": features}
-    print(f"  ✓ Production model — R²: {r2:.3f}")
+    print(f"  [OK] Production model -- R2: {r2:.3f}")
     return model, features, metrics
 
 
@@ -153,12 +153,12 @@ def train_equipment_risk_model():
         pickle.dump(model, f)
 
     metrics = {"accuracy": round(acc, 3)}
-    print(f"  ✓ Equipment risk model — Accuracy: {acc:.3f}")
+    print(f"  [OK] Equipment risk model -- Accuracy: {acc:.3f}")
     return model, metrics
 
 
 def train_all():
-    print("🔄 Training ML models...")
+    print("[INFO] Training ML models...")
     ensure_models_dir()
     results = {}
 

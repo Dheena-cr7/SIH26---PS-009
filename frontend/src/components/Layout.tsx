@@ -46,8 +46,8 @@ export default function Layout() {
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <div className="text-sm font-bold text-text-primary leading-tight">MANGANESE</div>
-              <div className="text-xs text-accent-orange font-semibold leading-tight tracking-wider">INTELLIGENCE</div>
+              <div className="text-base font-extrabold text-text-primary tracking-tight leading-tight">ORE<span className="text-accent-orange">SEEK</span></div>
+              <div className="text-[10px] text-accent-orange font-semibold leading-tight tracking-widest uppercase">Intelligence</div>
             </div>
           )}
           <button
@@ -128,7 +128,7 @@ export default function Layout() {
           <div className="flex items-center gap-3">
             <Activity className="w-4 h-4 text-accent-orange" />
             <span className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-              {navItems.find(n => n.path === location.pathname)?.label || 'Manganese Intelligence'}
+              {navItems.find(n => n.path === location.pathname)?.label || 'OreSeek Intelligence'}
             </span>
           </div>
           

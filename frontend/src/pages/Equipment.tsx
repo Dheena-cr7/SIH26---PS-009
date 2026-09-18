@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { getEquipment } from '../services/api'
+import { MOCK_EQUIPMENT } from '../services/mockData'
 import { Wrench, ShieldAlert, Cpu, Activity, AlertTriangle, Clock, Radio, Zap, Gauge, Thermometer, CheckCircle2 } from 'lucide-react'
 
 export default function Equipment() {
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<any>(MOCK_EQUIPMENT)
   const [isLiveStream, setIsLiveStream] = useState<boolean>(true)
   const [liveJitter, setLiveJitter] = useState<number>(0)
 

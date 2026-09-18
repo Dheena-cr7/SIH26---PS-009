@@ -56,8 +56,8 @@ shortfall_model, short_features = shortfall_model_data if shortfall_model_data e
 
 # ── FastAPI app ───────────────────────────────────────────────────────────────
 app = FastAPI(
-    title="Manganese Intelligence API",
-    description="AI-powered Manganese Mining Intelligence Platform — SIH 2026",
+    title="OreSeek API",
+    description="OreSeek — AI-Powered Mineral Exploration & Mining Intelligence Platform",
     version="1.0.0"
 )
 
@@ -70,7 +70,7 @@ app.add_middleware(
 
 # ── Helper loaders ────────────────────────────────────────────────────────────
 def load_json(path):
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
         return json.load(f)
 
 def load_csv(path):
@@ -456,4 +456,4 @@ def health():
 
 @app.get("/")
 def root():
-    return {"message": "Manganese Intelligence API — SIH 2026", "docs": "/docs"}
+    return {"message": "OreSeek API — SIH 2026", "docs": "/docs"}

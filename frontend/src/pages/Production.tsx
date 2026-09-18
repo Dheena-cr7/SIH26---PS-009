@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { getProductionHistory, getProductionForecast, getShortfall } from '../services/api'
+import { MOCK_PRODUCTION_HISTORY, MOCK_PRODUCTION_FORECAST, MOCK_SHORTFALL } from '../services/mockData'
 import { BarChart3, TrendingDown, AlertTriangle, Cpu, CloudRain, Clock, Activity, ArrowRight } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, ReferenceLine, AreaChart, Area } from 'recharts'
 import { useNavigate } from 'react-router-dom'
 
 export default function Production() {
-  const [history, setHistory] = useState<any[]>([])
-  const [forecast, setForecast] = useState<any[]>([])
-  const [shortfall, setShortfall] = useState<any>(null)
+  const [history, setHistory] = useState<any[]>(MOCK_PRODUCTION_HISTORY)
+  const [forecast, setForecast] = useState<any[]>(MOCK_PRODUCTION_FORECAST)
+  const [shortfall, setShortfall] = useState<any>(MOCK_SHORTFALL)
   const navigate = useNavigate()
 
   useEffect(() => {

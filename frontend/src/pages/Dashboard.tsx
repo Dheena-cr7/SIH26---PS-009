@@ -90,7 +90,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Executive Command Center</h1>
-          <p className="text-text-muted text-sm mt-0.5">Manganese Mine Intelligence — Central India Operations Scenario</p>
+          <p className="text-text-muted text-sm mt-0.5">OreSeek Mine Intelligence — Central India Operations Scenario</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="demo-badge">DEMO DATA MODE</span>

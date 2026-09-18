@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { runSimulation } from '../services/api'
+import { computeLocalSimulation } from '../services/mockData'
 import { Sliders as SlidersIcon, Play, RefreshCw, BarChart2, Activity, Zap, TrendingUp, AlertTriangle } from 'lucide-react'
 
 export default function Simulator() {
@@ -11,7 +12,13 @@ export default function Simulator() {
     working_hours: 8.0
   })
 
-  const [results, setResults] = useState<any>(null)
+  const [results, setResults] = useState<any>(() => computeLocalSimulation({
+    equipment_availability_pct: 82.0,
+    rainfall_scenario: 'MODERATE',
+    blasting_delay_days: 3,
+    equipment_redeployment: false,
+    working_hours: 8.0
+  }))
   const [loading, setLoading] = useState(false)
 
   // Run initial simulation to get baseline

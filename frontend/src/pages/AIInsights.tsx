@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { getModels, getRecommendations, getShortfall } from '../services/api'
+import { MOCK_MODELS, MOCK_RECOMMENDATIONS, MOCK_SHORTFALL } from '../services/mockData'
 import { Brain, Network, Zap, CheckCircle2, AlertTriangle, ArrowRight, XCircle } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts'
 import { useNavigate } from 'react-router-dom'
 
 export default function AIInsights() {
-  const [modelsData, setModelsData] = useState<any>(null)
-  const [recsData, setRecsData] = useState<any>(null)
-  const [shortfallData, setShortfallData] = useState<any>(null)
+  const [modelsData, setModelsData] = useState<any>(MOCK_MODELS)
+  const [recsData, setRecsData] = useState<any>(MOCK_RECOMMENDATIONS)
+  const [shortfallData, setShortfallData] = useState<any>(MOCK_SHORTFALL)
   const navigate = useNavigate()
 
   useEffect(() => {

@@ -49,14 +49,14 @@ export default function ExecutiveReportModal({ isOpen, onClose }: ExecutiveRepor
                 <Building className="w-4 h-4" /> Ministry of Steel • MOIL Limited
               </div>
               <h1 className="text-2xl font-black text-text-primary print:text-black mt-1">
-                MANGANESE INTELLIGENCE EXECUTIVE BRIEFING
+                ORESEEK AI EXECUTIVE BRIEFING
               </h1>
               <p className="text-xs text-text-muted print:text-gray-600 mt-0.5">
-                AI & Space Technology Decision Support Platform • Problem Statement PS-26009
+                AI & Space Technology Mineral Decision Support Platform • Problem Statement PS-26009
               </p>
             </div>
             <div className="text-right text-xs space-y-1">
-              <div className="font-mono text-text-secondary print:text-gray-700">REF: MOIL/AI-2026-Q3-09</div>
+              <div className="font-mono text-text-secondary print:text-gray-700">REF: ORESEEK/AI-2026-Q3-09</div>
               <div className="text-text-muted print:text-gray-500">Generated: {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
               <div className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400 print:border print:border-green-600 print:text-green-800">
                 OFFICIAL REPORT

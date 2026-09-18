@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { getEnvironment } from '../services/api'
+import { MOCK_ENVIRONMENT } from '../services/mockData'
 import { Cloud, Satellite, Thermometer, Droplets, Map, Activity, Wind, Eye } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LineChart, Line } from 'recharts'
 
 export default function Environment() {
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<any>(MOCK_ENVIRONMENT)
 
   useEffect(() => {
     getEnvironment().then(setData).catch(console.error)
