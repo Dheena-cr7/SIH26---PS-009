@@ -2,11 +2,17 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Play, Square, Radio, Volume2, Sparkles } from 'lucide-react'
 import { useLanguage } from '../services/i18n'
 
-const FEMALE_VOICE_KEYWORDS = [
+const FEMALE_VOICE_NAMES = [
   'zira', 'jenny', 'aria', 'samantha', 'victoria', 'karen', 'moira',
   'tessa', 'fiona', 'veena', 'hazel', 'catherine', 'susan', 'linda',
-  'ava', 'allison', 'stephanie', 'neerja', 'heera', 'swara', 'kalpana', 'female',
-  'ana', 'emma', 'olivia', 'mia', 'charlotte', 'sofia', 'clara', 'hindi', 'हिन्दी'
+  'ava', 'allison', 'stephanie', 'neerja', 'heera', 'swara', 'kalpana',
+  'ana', 'emma', 'olivia', 'mia', 'charlotte', 'sofia', 'clara', 'female',
+  'google uk english female', 'google us english'
+]
+
+const MALE_VOICE_NAMES = [
+  'david', 'mark', 'george', 'guy', 'ravi', 'hemant', 'male', 'stefan',
+  'paul', 'james', 'richard', 'microsoft david', 'microsoft mark'
 ]
 
 export default function AIVoiceBriefing() {
@@ -23,54 +29,66 @@ export default function AIVoiceBriefing() {
 
   const briefingText = lang === 'hi' ? briefingTextHi : briefingTextEn
 
-  // Helper to pick best voice for current language
-  const findBestVoiceForLang = (voices: SpeechSynthesisVoice[], currentLang: string): SpeechSynthesisVoice | null => {
+  // Strictly pick the highest quality female voice available on the host OS / browser
+  const findStrictFemaleVoice = (voices: SpeechSynthesisVoice[], currentLang: string): SpeechSynthesisVoice | null => {
     if (!voices || voices.length === 0) return null
 
     if (currentLang === 'hi') {
-      // 1. Check for dedicated Hindi voices
+      // 1. Hindi female voices
       const hiVoices = voices.filter(v => 
         v.lang.toLowerCase().startsWith('hi') || 
         v.name.toLowerCase().includes('hindi') || 
         v.name.includes('हिन्दी')
       )
-      if (hiVoices.length > 0) {
-        const femaleHi = hiVoices.find(v => {
-          const n = v.name.toLowerCase()
-          return FEMALE_VOICE_KEYWORDS.some(kw => n.includes(kw))
-        })
-        return femaleHi || hiVoices[0]
-      }
+      
+      const hiFemale = hiVoices.find(v => {
+        const n = v.name.toLowerCase()
+        return FEMALE_VOICE_NAMES.some(kw => n.includes(kw)) && !MALE_VOICE_NAMES.some(kw => n.includes(kw))
+      })
+      if (hiFemale) return hiFemale
+      if (hiVoices.length > 0) return hiVoices[0]
 
-      // Fallback: Indian English voice with good phonetic capability
-      const inVoices = voices.filter(v => v.lang.toLowerCase().includes('in'))
-      if (inVoices.length > 0) return inVoices[0]
+      // Fallback: Indian English female voice
+      const inFemale = voices.find(v => 
+        v.lang.toLowerCase().includes('in') && 
+        FEMALE_VOICE_NAMES.some(kw => v.name.toLowerCase().includes(kw)) &&
+        !MALE_VOICE_NAMES.some(kw => v.name.toLowerCase().includes(kw))
+      )
+      if (inFemale) return inFemale
     }
 
-    // Default English voices
+    // English Voices: strictly filter for female
     const enVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en'))
-    
-    // Check highest quality natural/neural female voices first
+
+    // Priority 1: Microsoft Natural/Neural Female (Jenny, Aria, etc.)
     const naturalFemale = enVoices.find(v => {
-      const name = v.name.toLowerCase()
-      return FEMALE_VOICE_KEYWORDS.some(kw => name.includes(kw)) && (name.includes('natural') || name.includes('neural') || name.includes('online'))
+      const n = v.name.toLowerCase()
+      return (n.includes('jenny') || n.includes('aria') || n.includes('natural') || n.includes('online')) &&
+             FEMALE_VOICE_NAMES.some(kw => n.includes(kw)) &&
+             !MALE_VOICE_NAMES.some(kw => n.includes(kw))
     })
     if (naturalFemale) return naturalFemale
 
-    // Check standard female english voices
-    const namedFemale = enVoices.find(v => {
-      const name = v.name.toLowerCase()
-      return FEMALE_VOICE_KEYWORDS.some(kw => name.includes(kw))
+    // Priority 2: Built-in Desktop Female (Zira Desktop, Google UK English Female, Samantha, Victoria)
+    const standardFemale = enVoices.find(v => {
+      const n = v.name.toLowerCase()
+      return (n.includes('zira') || n.includes('samantha') || n.includes('victoria') || n.includes('google uk english female') || n.includes('female')) &&
+             !MALE_VOICE_NAMES.some(kw => n.includes(kw))
     })
-    if (namedFemale) return namedFemale
+    if (standardFemale) return standardFemale
 
-    // Check any voice with 'female' in name
-    const genericFemale = voices.find(v => v.name.toLowerCase().includes('female'))
-    if (genericFemale) return genericFemale
+    // Priority 3: Any English voice with a known female name
+    const anyFemale = enVoices.find(v => {
+      const n = v.name.toLowerCase()
+      return FEMALE_VOICE_NAMES.some(kw => n.includes(kw)) && !MALE_VOICE_NAMES.some(kw => n.includes(kw))
+    })
+    if (anyFemale) return anyFemale
 
-    // Fallback to Google / Natural English or first English voice
-    const fallbackEn = enVoices.find(v => v.name.includes('Google') || v.name.includes('Natural')) || enVoices[0]
-    return fallbackEn || voices[0]
+    // Priority 4: Any non-male English voice
+    const nonMale = enVoices.find(v => !MALE_VOICE_NAMES.some(kw => v.name.toLowerCase().includes(kw)))
+    if (nonMale) return nonMale
+
+    return enVoices[0] || voices[0]
   }
 
   useEffect(() => {
@@ -86,9 +104,9 @@ export default function AIVoiceBriefing() {
       const voices = synthRef.current.getVoices()
       if (voices.length > 0) {
         setAvailableVoices(voices)
-        const bestVoice = findBestVoiceForLang(voices, lang)
-        if (bestVoice) {
-          setSelectedVoiceName(bestVoice.name)
+        const bestFemale = findStrictFemaleVoice(voices, lang)
+        if (bestFemale) {
+          setSelectedVoiceName(bestFemale.name)
         }
       }
     }
@@ -123,11 +141,11 @@ export default function AIVoiceBriefing() {
       synthRef.current.cancel()
       const utterance = new SpeechSynthesisUtterance(briefingText)
       utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-US'
-      utterance.rate = lang === 'hi' ? 0.95 : 1.02
-      utterance.pitch = 1.08
+      utterance.rate = lang === 'hi' ? 0.95 : 1.00
+      utterance.pitch = 1.16 // Fine-tuned feminine pitch for clear, pleasant executive narrator tone
 
       const allVoices = synthRef.current.getVoices()
-      const targetVoice = allVoices.find(v => v.name === selectedVoiceName) || findBestVoiceForLang(allVoices, lang)
+      const targetVoice = allVoices.find(v => v.name === selectedVoiceName) || findStrictFemaleVoice(allVoices, lang)
       if (targetVoice) {
         utterance.voice = targetVoice
       }
@@ -142,16 +160,18 @@ export default function AIVoiceBriefing() {
 
   if (!isSupported) return null
 
-  // Filter voices matching current language
-  const relevantVoiceOptions = availableVoices.filter(v => {
-    const name = v.name.toLowerCase()
+  // Filter curated female voice options for user selector
+  const curatedFemaleVoices = availableVoices.filter(v => {
+    const n = v.name.toLowerCase()
+    if (MALE_VOICE_NAMES.some(kw => n.includes(kw))) return false
     if (lang === 'hi') {
-      return v.lang.toLowerCase().startsWith('hi') || name.includes('hindi') || name.includes('हिन्दी') || v.lang.toLowerCase().includes('in')
+      return v.lang.toLowerCase().startsWith('hi') || n.includes('hindi') || n.includes('हिन्दी') || v.lang.toLowerCase().includes('in')
     }
     return v.lang.toLowerCase().startsWith('en') && (
-      FEMALE_VOICE_KEYWORDS.some(kw => name.includes(kw)) ||
-      name.includes('google') ||
-      name.includes('natural')
+      FEMALE_VOICE_NAMES.some(kw => n.includes(kw)) ||
+      n.includes('natural') ||
+      n.includes('online') ||
+      !MALE_VOICE_NAMES.some(kw => n.includes(kw))
     )
   })
 
@@ -167,7 +187,7 @@ export default function AIVoiceBriefing() {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-bold text-text-primary">{t('situationRoomAudio')}</span>
             <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-pink-500/20 text-pink-400 border border-pink-500/30 flex items-center gap-1">
-              <Sparkles className="w-2.5 h-2.5" /> {lang === 'hi' ? '🇮🇳 हिन्दी AI वक्ता' : '🇬🇧 AI NARRATOR'}
+              <Sparkles className="w-2.5 h-2.5" /> {lang === 'hi' ? '🇮🇳 महिला AI वक्ता (Female Voice)' : '🇬🇧 FEMALE AI NARRATOR'}
             </span>
             {selectedVoiceName && (
               <span className="text-[10px] text-text-muted border border-border/40 px-1.5 py-0.5 rounded bg-surface/50">
@@ -182,8 +202,8 @@ export default function AIVoiceBriefing() {
       </div>
 
       <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
-        {/* Voice Selector if multiple voices exist for language */}
-        {relevantVoiceOptions.length > 1 && (
+        {/* Voice Selector if multiple female voices exist for language */}
+        {curatedFemaleVoices.length > 1 && (
           <select
             value={selectedVoiceName}
             onChange={(e) => {
@@ -193,12 +213,12 @@ export default function AIVoiceBriefing() {
                 setIsPlaying(false)
               }
             }}
-            className="text-[11px] bg-surface border border-border/60 text-text-secondary rounded px-2 py-1 outline-none focus:border-accent-orange"
-            title="Select Voice Profile"
+            className="text-[11px] bg-surface border border-border/60 text-text-secondary rounded px-2 py-1 outline-none focus:border-accent-orange cursor-pointer"
+            title="Select Female Voice Profile"
           >
-            {relevantVoiceOptions.map((v) => (
+            {curatedFemaleVoices.map((v) => (
               <option key={v.name} value={v.name}>
-                {v.name.length > 30 ? `${v.name.substring(0, 27)}...` : v.name}
+                👩 {v.name.replace(/Microsoft|Google|Desktop|English/gi, '').trim()}
               </option>
             ))}
           </select>

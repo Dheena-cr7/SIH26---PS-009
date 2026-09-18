@@ -309,25 +309,23 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
     const clean = text.replace(/[*#•`$]/g, '').replace(/\[(.*?)\]\(.*?\)/g, '$1')
     const utterance = new SpeechSynthesisUtterance(clean)
     utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-US'
-    utterance.rate = lang === 'hi' ? 0.95 : 1.05
+    utterance.rate = lang === 'hi' ? 0.95 : 1.00
+    utterance.pitch = 1.15 // Fine-tuned feminine executive tone
 
     const voices = synthRef.current.getVoices()
     if (lang === 'hi') {
-      const hiVoice = voices.find(v => 
-        v.lang.toLowerCase().startsWith('hi') || 
-        v.name.toLowerCase().includes('hindi') || 
-        v.name.includes('हिन्दी') ||
-        v.name.includes('Swara') ||
-        v.name.includes('Kalpana') ||
-        v.name.includes('Neerja') ||
-        v.name.includes('Heera')
-      )
+      const hiVoice = voices.find(v => {
+        const n = v.name.toLowerCase()
+        return (v.lang.toLowerCase().startsWith('hi') || n.includes('hindi') || n.includes('हिन्दी') || n.includes('swara') || n.includes('kalpana') || n.includes('neerja') || n.includes('heera')) &&
+               !n.includes('david') && !n.includes('mark') && !n.includes('ravi') && !n.includes('hemant')
+      })
       if (hiVoice) utterance.voice = hiVoice
     } else {
-      const naturalFemale = voices.find(v => 
-        v.lang.startsWith('en') && 
-        (v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Zira') || v.name.includes('Aria') || v.name.includes('Female'))
-      )
+      const naturalFemale = voices.find(v => {
+        const n = v.name.toLowerCase()
+        return (n.includes('jenny') || n.includes('aria') || n.includes('zira') || n.includes('samantha') || n.includes('victoria') || n.includes('karen') || n.includes('female') || n.includes('google uk english female')) &&
+               !n.includes('david') && !n.includes('mark') && !n.includes('george') && !n.includes('guy') && !n.includes('male')
+      })
       if (naturalFemale) utterance.voice = naturalFemale
     }
 
