@@ -231,33 +231,72 @@ export default function Exploration() {
     getExplorationZones().then(d => { if (d.zones?.length) setZones(d.zones) }).catch(() => {})
   }, [])
 
+  const [mobileTab, setMobileTab] = useState<'map' | 'targets' | 'details'>('map')
+
   const handleZoneClick = (zone: any) => {
     setSelectedType('zone')
     getExplorationZone(zone.id).then(setSelected).catch(() => setSelected(zone))
+    if (window.innerWidth < 1024) setMobileTab('details')
   }
 
   const handleMineClick = (mine: any) => {
     setSelectedType('mine')
     setSelected(mine)
+    if (window.innerWidth < 1024) setMobileTab('details')
   }
 
   const handleDrillClick = (drill: any) => {
     setSelectedType('drill')
     setSelected(drill)
+    if (window.innerWidth < 1024) setMobileTab('details')
   }
 
   const handleGeoClick = (geo: any) => {
     setSelectedType('geo')
     setSelected(geo)
+    if (window.innerWidth < 1024) setMobileTab('details')
   }
 
   const priorityOrder: any = { 'VERY HIGH': 0, HIGH: 1, MODERATE: 2, LOW: 3 }
   const sorted = [...zones].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
 
   return (
-    <div className="flex gap-4 h-[calc(100vh-120px)] animate-fade-in">
+    <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-130px)] animate-fade-in relative">
+      
+      {/* Mobile View Switcher (Visible only on < lg screens) */}
+      <div className="lg:hidden flex rounded-xl bg-bg-800 p-1 border border-surface-border flex-shrink-0">
+        <button
+          onClick={() => setMobileTab('map')}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
+            mobileTab === 'map' ? 'bg-accent-orange text-black shadow-md' : 'text-text-secondary'
+          }`}
+        >
+          🗺️ Map View
+        </button>
+        <button
+          onClick={() => setMobileTab('targets')}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
+            mobileTab === 'targets' ? 'bg-accent-orange text-black shadow-md' : 'text-text-secondary'
+          }`}
+        >
+          🎯 Targets ({sorted.length})
+        </button>
+        {selected && (
+          <button
+            onClick={() => setMobileTab('details')}
+            className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
+              mobileTab === 'details' ? 'bg-accent-cyan text-black shadow-md' : 'text-text-secondary'
+            }`}
+          >
+            ℹ️ Details
+          </button>
+        )}
+      </div>
+
       {/* Sidebar Controls */}
-      <div className="w-80 flex-shrink-0 flex flex-col gap-3 overflow-y-auto">
+      <div className={`w-full lg:w-80 flex-shrink-0 flex flex-col gap-3 overflow-y-auto ${
+        mobileTab !== 'targets' ? 'hidden lg:flex' : 'flex'
+      }`}>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-text-primary">GIS Geological Explorer</h1>
@@ -363,7 +402,9 @@ export default function Exploration() {
       </div>
 
       {/* Main GIS Map */}
-      <div className="flex-1 relative rounded-xl overflow-hidden border border-surface-border">
+      <div className={`flex-1 relative rounded-xl overflow-hidden border border-surface-border min-h-[400px] ${
+        mobileTab !== 'map' ? 'hidden lg:block' : 'block'
+      }`}>
         
         {/* Floating Basemap Selector */}
         <div className="absolute top-4 right-4 z-[1000] flex rounded-lg bg-bg-900/90 backdrop-blur-md p-1 border border-surface-border shadow-xl text-xs">
@@ -537,7 +578,9 @@ export default function Exploration() {
 
       {/* Dynamic Detail Panel */}
       {selected && (
-        <div className="w-80 flex-shrink-0 card overflow-y-auto animate-slide-in space-y-4">
+        <div className={`w-full lg:w-80 flex-shrink-0 card overflow-y-auto animate-slide-in space-y-4 ${
+          mobileTab !== 'details' ? 'hidden lg:block' : 'block'
+        }`}>
           
           {/* Header */}
           <div className="flex items-start justify-between">
