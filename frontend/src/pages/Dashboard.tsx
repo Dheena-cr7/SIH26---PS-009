@@ -64,9 +64,12 @@ function AlertItem({ alert }: any) {
 
 import AIVoiceBriefing from '../components/AIVoiceBriefing'
 
+import { useLanguage } from '../services/i18n'
+
 export default function Dashboard() {
   const [data, setData] = useState<any>(DEMO_DATA)
   const navigate = useNavigate()
+  const { t } = useLanguage()
 
   useEffect(() => {
     getDashboard().then(setData).catch(() => {})
@@ -89,13 +92,13 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">Executive Command Center</h1>
+          <h1 className="text-2xl font-bold text-text-primary">{t('navCommandCenter')}</h1>
           <p className="text-text-muted text-sm mt-0.5">OreSeek Mine Intelligence — Central India Operations Scenario</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="demo-badge">DEMO DATA MODE</span>
+          <span className="demo-badge">{t('demoBadge')}</span>
           <button onClick={() => navigate('/simulator')} className="btn-primary flex items-center gap-2 text-xs">
-            <Zap className="w-3.5 h-3.5" /> Run Simulator
+            <Zap className="w-3.5 h-3.5" /> {t('runSimulator')}
           </button>
         </div>
       </div>
@@ -105,15 +108,15 @@ export default function Dashboard() {
 
       {/* KPI Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4">
-        <KPICard label="Monitored Area" value={`${k.monitored_area_km2} km²`} sub="Central India" icon={Map} color="#3b82f6" />
-        <KPICard label="High Prospectivity" value={`${k.high_prospectivity_zones} zones`} sub="Score ≥ 75" icon={Target} color="#8b5cf6" />
-        <KPICard label="Resource Potential" value={`${k.estimated_resource_potential_mt} Mt`} sub={`${k.resource_confidence_range.low}–${k.resource_confidence_range.high} Mt range`} icon={Activity} color="#06b6d4" />
-        <KPICard label="Production Forecast" value={`${k.forecast_production_mt} Mt`} sub="Annual (AI model)" icon={TrendingDown} color="#f97316" />
-        <KPICard label="Shortfall Risk"
+        <KPICard label={t('monitoredArea')} value={`${k.monitored_area_km2} km²`} sub="Central India" icon={Map} color="#3b82f6" />
+        <KPICard label={t('highProspectivity')} value={`${k.high_prospectivity_zones} zones`} sub="Score ≥ 75" icon={Target} color="#8b5cf6" />
+        <KPICard label={t('resourcePotential')} value={`${k.estimated_resource_potential_mt} Mt`} sub={`${k.resource_confidence_range.low}–${k.resource_confidence_range.high} Mt range`} icon={Activity} color="#06b6d4" />
+        <KPICard label={t('productionForecast')} value={`${k.forecast_production_mt} Mt`} sub="Annual (AI model)" icon={TrendingDown} color="#f97316" />
+        <KPICard label={t('shortfallRisk')}
           value={<span style={{ color: k.shortfall_risk_pct >= 60 ? '#ef4444' : k.shortfall_risk_pct >= 35 ? '#f59e0b' : '#22c55e' }}>{k.shortfall_risk_pct}%</span>}
           sub={k.shortfall_risk_level} icon={AlertTriangle}
           color={k.shortfall_risk_pct >= 60 ? '#ef4444' : '#f59e0b'} />
-        <KPICard label="Equip. Availability" value={`${k.equipment_availability_pct}%`} sub={`${k.critical_equipment_count} critical alerts`} icon={Cpu} color="#22c55e" />
+        <KPICard label={t('equipmentAvail')} value={`${k.equipment_availability_pct}%`} sub={`${k.critical_equipment_count} critical alerts`} icon={Cpu} color="#22c55e" />
       </div>
 
       {/* Second row: Shortfall gauge + production mini chart + shortfall breakdown + alerts */}

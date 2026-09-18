@@ -3,40 +3,48 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Map, Database, BarChart3, Wrench,
   Cloud, Brain, Sliders, Server, ChevronLeft, ChevronRight,
-  Satellite, AlertTriangle, Activity, Presentation
+  Satellite, AlertTriangle, Activity, Presentation,
+  FileText, Sparkles, Printer, Bot, Globe
 } from 'lucide-react'
 
-const navItems = [
-  { path: '/dashboard', label: 'Command Center', icon: LayoutDashboard },
-  { path: '/exploration', label: 'Exploration', icon: Map },
-  { path: '/resources', label: 'Resource Intelligence', icon: Database },
-  { path: '/production', label: 'Production', icon: BarChart3 },
-  { path: '/equipment', label: 'Equipment', icon: Wrench },
-  { path: '/environment', label: 'Environment', icon: Cloud },
-  { path: '/ai', label: 'AI Insights', icon: Brain },
-  { path: '/simulator', label: 'What-If Simulator', icon: Sliders },
-  { path: '/data', label: 'Data Center', icon: Server },
-]
-
+import { useLanguage } from '../services/i18n'
 import ExecutiveReportModal from './ExecutiveReportModal'
 import PresentationTour from './PresentationTour'
 import OreSeekCopilot from './OreSeekCopilot'
-import { FileText, Sparkles, Printer, Bot } from 'lucide-react'
+import SpectralBandInspector from './SpectralBandInspector'
+
+const navItemDefs = [
+  { path: '/dashboard', labelKey: 'navCommandCenter', icon: LayoutDashboard },
+  { path: '/exploration', labelKey: 'navExploration', icon: Map },
+  { path: '/resources', labelKey: 'navResources', icon: Database },
+  { path: '/production', labelKey: 'navProduction', icon: BarChart3 },
+  { path: '/equipment', labelKey: 'navEquipment', icon: Wrench },
+  { path: '/environment', labelKey: 'navEnvironment', icon: Cloud },
+  { path: '/ai', labelKey: 'navAI', icon: Brain },
+  { path: '/simulator', labelKey: 'navSimulator', icon: Sliders },
+  { path: '/data', labelKey: 'navData', icon: Server },
+]
 
 export default function Layout() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { lang, setLang, t } = useLanguage()
+  
   const [collapsed, setCollapsed] = useState(false)
   const [presentationMode, setPresentationMode] = useState(false)
   const [isReportOpen, setIsReportOpen] = useState(false)
   const [isTourOpen, setIsTourOpen] = useState(false)
+  const [isSpectralOpen, setIsSpectralOpen] = useState(false)
+
+  const activeNavItem = navItemDefs.find(n => n.path === location.pathname)
 
   return (
     <div className={`flex h-screen overflow-hidden bg-bg-900 ${presentationMode ? 'presentation-mode' : ''}`}>
       
-      {/* Modals & AI Assistant */}
+      {/* Modals & Interactive Tools */}
       <ExecutiveReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
       <PresentationTour isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} />
+      <SpectralBandInspector isOpen={isSpectralOpen} onClose={() => setIsSpectralOpen(false)} />
       <OreSeekCopilot onOpenReport={() => setIsReportOpen(true)} onOpenTour={() => setIsTourOpen(true)} />
 
       {/* Sidebar */}
@@ -48,8 +56,12 @@ export default function Layout() {
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <div className="text-base font-extrabold text-text-primary tracking-tight leading-tight">ORE<span className="text-accent-orange">SEEK</span></div>
-              <div className="text-[10px] text-accent-orange font-semibold leading-tight tracking-widest uppercase">Intelligence</div>
+              <div className="text-base font-extrabold text-text-primary tracking-tight leading-tight">
+                {t('brandTitle')}
+              </div>
+              <div className="text-[10px] text-accent-orange font-semibold leading-tight tracking-widest uppercase">
+                {t('brandSubtitle')}
+              </div>
             </div>
           )}
           <button
@@ -62,8 +74,9 @@ export default function Layout() {
 
         {/* Nav */}
         <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-          {navItems.map(({ path, label, icon: Icon }) => {
+          {navItemDefs.map(({ path, labelKey, icon: Icon }) => {
             const active = location.pathname === path
+            const label = t(labelKey)
             return (
               <button
                 key={path}
@@ -87,7 +100,7 @@ export default function Layout() {
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-accent-orange to-orange-600 hover:opacity-90 shadow-md transition-all"
               >
                 <Presentation className="w-3.5 h-3.5" />
-                Judge Demo Tour
+                {t('judgeTour')}
               </button>
               
               <button
@@ -95,16 +108,16 @@ export default function Layout() {
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
               >
                 <FileText className="w-3.5 h-3.5 text-accent-blue" />
-                Executive Briefing
+                {t('execReport')}
               </button>
 
               <div className="flex items-center gap-2 px-2 pt-1">
                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse-slow"></div>
-                <span className="text-xs text-text-muted">System Online</span>
+                <span className="text-xs text-text-muted">{t('systemOnline')}</span>
               </div>
               <div className="demo-badge w-full justify-center">
                 <AlertTriangle className="w-3 h-3" />
-                DEMO DATA MODE
+                {t('demoBadge')}
               </div>
             </>
           )}
@@ -130,37 +143,49 @@ export default function Layout() {
           <div className="flex items-center gap-3">
             <Activity className="w-4 h-4 text-accent-orange" />
             <span className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-              {navItems.find(n => n.path === location.pathname)?.label || 'OreSeek Intelligence'}
+              {activeNavItem ? t(activeNavItem.labelKey) : t('brandTitle')}
             </span>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Bilingual Switcher Toggle */}
             <button
-              onClick={() => setIsReportOpen(true)}
-              className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5"
+              onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border border-surface-border bg-surface-muted hover:bg-surface-hover text-text-primary transition-all shadow-sm"
+              title="Switch Language / भाषा बदलें"
             >
-              <Printer className="w-3.5 h-3.5 text-accent-blue" />
-              <span className="hidden sm:inline">Executive PDF Report</span>
+              <Globe className="w-3.5 h-3.5 text-accent-cyan" />
+              <span>{lang === 'en' ? '🇮🇳 हिन्दी' : '🇬🇧 English'}</span>
             </button>
 
+            {/* Spectral Inspector Tool Trigger */}
+            <button
+              onClick={() => setIsSpectralOpen(true)}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/30 hover:bg-accent-cyan/20 transition-all"
+              title="Open Sentinel-2 Spectral Band Ratio Inspector"
+            >
+              <Satellite className="w-3.5 h-3.5" />
+              <span>{t('spectralInspector')}</span>
+            </button>
+
+            {/* AI Copilot Trigger */}
             <button
               onClick={() => window.dispatchEvent(new CustomEvent('open-oreseek-copilot'))}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-accent-orange to-amber-500 hover:opacity-90 shadow-md transition-all"
               title="Open OreSeek AI Copilot"
             >
               <Bot className="w-3.5 h-3.5" />
-              <span>AI Copilot</span>
+              <span>{t('aiCopilot')}</span>
             </button>
 
+            {/* Judge Tour Trigger */}
             <button
               onClick={() => setIsTourOpen(true)}
               className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Judge Presentation</span>
+              <span className="hidden sm:inline">{t('judgeTour')}</span>
             </button>
-
-            <span className="hidden lg:inline-flex demo-badge">Prototype Mode</span>
           </div>
         </header>
 
