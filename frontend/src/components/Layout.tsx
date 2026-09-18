@@ -20,7 +20,8 @@ const navItems = [
 
 import ExecutiveReportModal from './ExecutiveReportModal'
 import PresentationTour from './PresentationTour'
-import { FileText, Sparkles, Printer } from 'lucide-react'
+import OreSeekCopilot from './OreSeekCopilot'
+import { FileText, Sparkles, Printer, Bot } from 'lucide-react'
 
 export default function Layout() {
   const location = useLocation()
@@ -33,9 +34,10 @@ export default function Layout() {
   return (
     <div className={`flex h-screen overflow-hidden bg-bg-900 ${presentationMode ? 'presentation-mode' : ''}`}>
       
-      {/* Modals */}
+      {/* Modals & AI Assistant */}
       <ExecutiveReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
       <PresentationTour isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} />
+      <OreSeekCopilot onOpenReport={() => setIsReportOpen(true)} onOpenTour={() => setIsTourOpen(true)} />
 
       {/* Sidebar */}
       <aside className={`flex flex-col bg-bg-800 border-r border-surface-border transition-all duration-300 ${collapsed ? 'w-16' : 'w-60'} flex-shrink-0`}>
@@ -139,6 +141,15 @@ export default function Layout() {
             >
               <Printer className="w-3.5 h-3.5 text-accent-blue" />
               <span className="hidden sm:inline">Executive PDF Report</span>
+            </button>
+
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-oreseek-copilot'))}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-accent-orange to-amber-500 hover:opacity-90 shadow-md transition-all"
+              title="Open OreSeek AI Copilot"
+            >
+              <Bot className="w-3.5 h-3.5" />
+              <span>AI Copilot</span>
             </button>
 
             <button

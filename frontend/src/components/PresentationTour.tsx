@@ -84,7 +84,7 @@ export default function PresentationTour({ isOpen, onClose }: PresentationTourPr
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-lg w-full card p-5 bg-bg-900/95 backdrop-blur-md border-accent-orange/40 shadow-2xl animate-slide-in">
+    <div className="fixed bottom-6 left-6 md:left-24 z-50 max-w-lg w-full card p-5 bg-bg-900/95 backdrop-blur-md border-accent-orange/40 shadow-2xl animate-slide-in">
       
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-surface-border">
