@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Polygon, CircleMarker, Marker, Tooltip, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { getExplorationZones, getExplorationZone } from '../services/api'
-import { X, Layers, Target, Info, BarChart2, Pickaxe, Drill, Mountain, Eye, CheckSquare, Square } from 'lucide-react'
+import { X, Layers, Target, Info, BarChart2, Pickaxe, Drill, Mountain, Eye, CheckSquare, Square, Satellite, Sparkles } from 'lucide-react'
 
 // Fix leaflet default icon issue
 import L from 'leaflet'
@@ -612,6 +612,29 @@ export default function Exploration() {
                 </div>
               </div>
 
+              {/* Sentinel-2 Multi-Spectral Reflectance & Index Inspector */}
+              <div className="p-3 rounded-xl bg-surface-muted/60 border border-surface-border space-y-2.5">
+                <div className="flex items-center justify-between text-xs font-bold text-accent-cyan">
+                  <span className="flex items-center gap-1.5"><Satellite className="w-3.5 h-3.5" /> Space Spectral Indices (ESA Sentinel-2)</span>
+                  <span className="text-[10px] text-green-400 font-mono font-bold">10m RES</span>
+                </div>
+
+                <div className="space-y-1.5 text-[11px]">
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-bg-900 border border-surface-border">
+                    <span className="text-text-muted">Iron Oxide Cap (B4/B2):</span>
+                    <span className="font-mono font-bold text-accent-orange">1.48 (Hydrothermal Cap)</span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-bg-900 border border-surface-border">
+                    <span className="text-text-muted">Clay Alteration (B11/B12):</span>
+                    <span className="font-mono font-bold text-green-400">1.34 (Gondite Halo)</span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-bg-900 border border-surface-border">
+                    <span className="text-text-muted">Ferrous Index (B11/B8):</span>
+                    <span className="font-mono font-bold text-cyan-400">1.22 (Mineralized)</span>
+                  </div>
+                </div>
+              </div>
+
               <div className="p-3 rounded-lg border border-accent-orange/20 bg-accent-orange/5">
                 <div className="text-xs font-semibold text-accent-orange mb-1">Prescribed Action</div>
                 <p className="text-xs text-text-secondary leading-relaxed">{selected.recommendation}</p>
@@ -679,6 +702,33 @@ export default function Exploration() {
                 <div className="p-2.5 rounded-lg bg-surface-muted text-xs">
                   <div className="text-text-muted">Core Recovery</div>
                   <div className="font-bold text-accent-blue text-sm mt-0.5">{selected.recovery}%</div>
+                </div>
+              </div>
+
+              {/* Graphical Downhole Stratigraphy Strip Column */}
+              <div className="p-3 rounded-xl bg-surface-muted/60 border border-surface-border space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-text-primary">
+                  <span className="flex items-center gap-1.5"><Layers className="w-3.5 h-3.5 text-accent-orange" /> Downhole Stratigraphy Column</span>
+                  <span className="text-[10px] text-text-muted font-mono">0 - {selected.depth}m</span>
+                </div>
+
+                <div className="rounded-lg overflow-hidden border border-surface-border text-[10px] font-mono shadow-inner">
+                  <div className="p-1.5 bg-amber-950/50 text-amber-300 border-b border-surface-border/60 flex justify-between">
+                    <span>0 - 18m: Surface Laterite Cap</span>
+                    <span>Barren Soil</span>
+                  </div>
+                  <div className="p-1.5 bg-purple-950/50 text-purple-300 border-b border-surface-border/60 flex justify-between">
+                    <span>18 - 48m: Mansar Quartz-Muscovite Schist</span>
+                    <span>14.2% Mn</span>
+                  </div>
+                  <div className="p-2 bg-gradient-to-r from-red-500/25 to-orange-500/25 text-orange-200 border-b border-surface-border/80 font-bold flex justify-between items-center">
+                    <span>⭐ 48 - 110m: {selected.rock} (Ore Bed)</span>
+                    <span className="text-green-400 font-bold">{selected.mn_grade}% Mn</span>
+                  </div>
+                  <div className="p-1.5 bg-slate-900/90 text-slate-300 flex justify-between">
+                    <span>110 - {selected.depth}m: Tirodi Footwall Gneiss</span>
+                    <span>3.8% Mn</span>
+                  </div>
                 </div>
               </div>
 

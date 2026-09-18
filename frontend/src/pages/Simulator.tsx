@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { runSimulation } from '../services/api'
 import { computeLocalSimulation } from '../services/mockData'
-import { Sliders as SlidersIcon, Play, RefreshCw, BarChart2, Activity, Zap, TrendingUp, AlertTriangle } from 'lucide-react'
+import OreBlendingOptimizer from '../components/OreBlendingOptimizer'
+import { Sliders as SlidersIcon, Play, RefreshCw, BarChart2, Activity, Zap, TrendingUp, AlertTriangle, Scale, Gauge } from 'lucide-react'
 
 export default function Simulator() {
+  const [activeTab, setActiveTab] = useState<'fleet_policy' | 'ore_blending'>('fleet_policy')
   const [params, setParams] = useState({
     equipment_availability_pct: 82.0,
     rainfall_scenario: 'MODERATE',
@@ -53,16 +55,45 @@ export default function Simulator() {
 
   return (
     <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
-          <SlidersIcon className="w-6 h-6 text-accent-cyan" />
-          What-If Simulator
-        </h1>
-        <p className="text-text-muted text-sm mt-1">Interactive operational planning and scenario modeling</p>
+      {/* Header with Sub-Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
+            <SlidersIcon className="w-6 h-6 text-accent-cyan" />
+            What-If Simulator & Policy Engine
+          </h1>
+          <p className="text-text-muted text-sm mt-0.5">Interactive operational planning, fleet reallocation, and ore blending optimization</p>
+        </div>
+
+        {/* Tab Switcher */}
+        <div className="flex rounded-xl bg-bg-800 p-1 border border-surface-border self-start">
+          <button
+            onClick={() => setActiveTab('fleet_policy')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeTab === 'fleet_policy'
+                ? 'bg-accent-cyan text-black shadow-md'
+                : 'text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            <Gauge className="w-3.5 h-3.5" /> Fleet & Shortfall
+          </button>
+          <button
+            onClick={() => setActiveTab('ore_blending')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              activeTab === 'ore_blending'
+                ? 'bg-accent-orange text-black shadow-md'
+                : 'text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            <Scale className="w-3.5 h-3.5" /> Smart Ore Blending
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {activeTab === 'ore_blending' ? (
+        <OreBlendingOptimizer />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Controls Column */}
         <div className="lg:col-span-5 space-y-4">
@@ -261,6 +292,7 @@ export default function Simulator() {
           </div>
         </div>
       </div>
+      )}
     </div>
   )
 }
