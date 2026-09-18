@@ -93,7 +93,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">{t('navCommandCenter')}</h1>
-          <p className="text-text-muted text-sm mt-0.5">OreSeek Mine Intelligence — Central India Operations Scenario</p>
+          <p className="text-text-muted text-sm mt-0.5">{t('dashboardSubtitle')}</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="demo-badge">{t('demoBadge')}</span>
@@ -123,8 +123,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Shortfall risk */}
         <div className="card">
-          <div className="section-header">Shortfall Risk Engine</div>
-          <div className="section-sub mb-4">Probability of annual production target miss</div>
+          <div className="section-header">{t('shortfallRiskEngine')}</div>
+          <div className="section-sub mb-4">{t('shortfallProbSub')}</div>
           <div className="flex flex-col items-center py-2">
             <div className="relative w-36 h-36">
               <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
@@ -135,20 +135,20 @@ export default function Dashboard() {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-3xl font-bold text-red-400">{k.shortfall_risk_pct}%</span>
-                <span className="text-xs text-text-muted">risk</span>
+                <span className="text-xs text-text-muted">{t('shortfallRisk')}</span>
               </div>
             </div>
-            <div className="badge-high mt-3">HIGH RISK</div>
+            <div className="badge-high mt-3">{k.shortfall_risk_pct >= 60 ? 'HIGH RISK' : 'MODERATE RISK'}</div>
             <p className="text-xs text-text-muted text-center mt-2">Expected gap: ~160,000 t/year</p>
           </div>
           <button onClick={() => navigate('/production')} className="btn-secondary w-full text-xs mt-2">
-            View Full Analysis →
+            {t('viewFullAnalysis')}
           </button>
         </div>
 
         {/* Production mini chart */}
         <div className="card">
-          <div className="section-header">Recent Production vs Target</div>
+          <div className="section-header">{t('recentProductionVsTarget')}</div>
           <div className="section-sub mb-3">Tonnes — last 6 months (synthetic demo)</div>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={productionData} barGap={2}>
@@ -171,7 +171,7 @@ export default function Dashboard() {
 
         {/* Shortfall causes */}
         <div className="card">
-          <div className="section-header">Shortfall Contributors</div>
+          <div className="section-header">{t('shortfallContributors')}</div>
           <div className="section-sub mb-3">AI model attribution (SHAP)</div>
           <div className="space-y-3">
             {(d.shortfall_breakdown || DEMO_DATA.shortfall_breakdown).map((item: any, i: number) => (
@@ -187,7 +187,7 @@ export default function Dashboard() {
             ))}
           </div>
           <button onClick={() => navigate('/ai')} className="btn-secondary w-full text-xs mt-3">
-            Full AI Explanation →
+            {t('fullAIExplanation')}
           </button>
         </div>
       </div>
@@ -196,7 +196,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="card">
           <div className="flex items-center justify-between mb-3">
-            <div className="section-header">Active Alerts</div>
+            <div className="section-header">{t('activeAlerts')}</div>
             <span className="badge-high">{(d.alerts || DEMO_DATA.alerts).length} alerts</span>
           </div>
           <div className="space-y-2">
@@ -207,7 +207,7 @@ export default function Dashboard() {
         </div>
 
         <div className="card">
-          <div className="section-header mb-3">Intelligence Workflow</div>
+          <div className="section-header mb-3">{t('intelligenceWorkflow')}</div>
           <div className="flex flex-col gap-1">
             {[
               { label: 'Satellite + Geological Data', done: true, path: '/exploration' },

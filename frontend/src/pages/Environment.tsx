@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { getEnvironment } from '../services/api'
 import { MOCK_ENVIRONMENT } from '../services/mockData'
+import { useLanguage } from '../services/i18n'
 import { Cloud, Satellite, Thermometer, Droplets, Map, Activity, Wind, Eye } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LineChart, Line } from 'recharts'
 
 export default function Environment() {
+  const { t } = useLanguage()
   const [data, setData] = useState<any>(MOCK_ENVIRONMENT)
 
   useEffect(() => {
@@ -27,9 +29,9 @@ export default function Environment() {
       <div>
         <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
           <Cloud className="w-6 h-6 text-accent-blue" />
-          Environment & Space Data
+          {t('environmentTitle')}
         </h1>
-        <p className="text-text-muted text-sm mt-1">Satellite-derived environmental indicators affecting mining operations</p>
+        <p className="text-text-muted text-sm mt-1">{t('environmentSubtitle')}</p>
       </div>
 
       {/* Latest Conditions Grid */}
@@ -157,6 +159,7 @@ export default function Environment() {
 }
 
 function PitSumpDewateringModel({ latestRainfall }: { latestRainfall: number }) {
+  const { t } = useLanguage()
   const [activePumps, setActivePumps] = useState<number>(3)
   const [simulatedRainfall, setSimulatedRainfall] = useState<number>(latestRainfall || 65)
   const [sumpInitialWater, setSumpInitialWater] = useState<number>(12500) // m³
@@ -202,7 +205,7 @@ function PitSumpDewateringModel({ latestRainfall }: { latestRainfall: number }) 
         <div>
           <div className="flex items-center gap-2">
             <Droplets className="w-5 h-5 text-accent-cyan" />
-            <h2 className="text-lg font-bold text-text-primary">Space-Based Pit Sump Inundation & Dewatering Engine</h2>
+            <h2 className="text-lg font-bold text-text-primary">{t('pitSumpEngineTitle')}</h2>
             <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${
               overflowRisk === 'CRITICAL' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
               overflowRisk === 'WARNING' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
@@ -212,7 +215,7 @@ function PitSumpDewateringModel({ latestRainfall }: { latestRainfall: number }) 
             </span>
           </div>
           <p className="text-xs text-text-muted mt-0.5">
-            Real-time satellite precipitation integration, pit catchment runoff hydrograph & sump pump discharge balancing
+            {t('pitSumpEngineSubtitle')}
           </p>
         </div>
 
@@ -220,7 +223,7 @@ function PitSumpDewateringModel({ latestRainfall }: { latestRainfall: number }) 
           onClick={handleAutoDispatch}
           className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 self-start sm:self-auto shadow-md"
         >
-          <Wind className="w-3.5 h-3.5" /> Auto-Dispatch Pumps
+          <Wind className="w-3.5 h-3.5" /> {t('autoDispatchPumps')}
         </button>
       </div>
 

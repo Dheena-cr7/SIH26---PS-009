@@ -3,9 +3,11 @@ import { runSimulation } from '../services/api'
 import { computeLocalSimulation } from '../services/mockData'
 import OreBlendingOptimizer from '../components/OreBlendingOptimizer'
 import BlastOptimizer from '../components/BlastOptimizer'
+import { useLanguage } from '../services/i18n'
 import { Sliders as SlidersIcon, Play, RefreshCw, BarChart2, Activity, Zap, TrendingUp, AlertTriangle, Scale, Gauge, Flame } from 'lucide-react'
 
 export default function Simulator() {
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<'fleet_policy' | 'ore_blending' | 'blast_optimization'>('fleet_policy')
   const [params, setParams] = useState({
     equipment_availability_pct: 82.0,
@@ -61,9 +63,9 @@ export default function Simulator() {
         <div>
           <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
             <SlidersIcon className="w-6 h-6 text-accent-cyan" />
-            What-If Simulator & Policy Engine
+            {t('simulatorTitle')}
           </h1>
-          <p className="text-text-muted text-sm mt-0.5">Interactive operational planning, fleet reallocation, blast sizing, and ore blending</p>
+          <p className="text-text-muted text-sm mt-0.5">{t('simulatorSubtitle')}</p>
         </div>
 
         {/* Tab Switcher */}
@@ -76,7 +78,7 @@ export default function Simulator() {
                 : 'text-text-secondary hover:text-text-primary'
             }`}
           >
-            <Gauge className="w-3.5 h-3.5" /> Fleet & Shortfall
+            <Gauge className="w-3.5 h-3.5" /> {t('fleetPolicyTab')}
           </button>
           <button
             onClick={() => setActiveTab('ore_blending')}
@@ -86,7 +88,7 @@ export default function Simulator() {
                 : 'text-text-secondary hover:text-text-primary'
             }`}
           >
-            <Scale className="w-3.5 h-3.5" /> Smart Blending
+            <Scale className="w-3.5 h-3.5" /> {t('oreBlendingTab')}
           </button>
           <button
             onClick={() => setActiveTab('blast_optimization')}
@@ -96,7 +98,7 @@ export default function Simulator() {
                 : 'text-text-secondary hover:text-text-primary'
             }`}
           >
-            <Flame className="w-3.5 h-3.5" /> Blast & Flyrock
+            <Flame className="w-3.5 h-3.5" /> {t('blastOptimizationTab')}
           </button>
         </div>
       </div>
