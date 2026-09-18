@@ -113,6 +113,9 @@ export default function Environment() {
          </div>
       </div>
 
+      {/* Pit Sump Inundation & Dewatering Early Warning System */}
+      <PitSumpDewateringModel latestRainfall={latest.rainfall_mm || 45} />
+
       {/* Satellite Integration Status */}
       <div className="card">
          <div className="section-header mb-4 flex items-center gap-2">
@@ -152,3 +155,208 @@ export default function Environment() {
     </div>
   )
 }
+
+function PitSumpDewateringModel({ latestRainfall }: { latestRainfall: number }) {
+  const [activePumps, setActivePumps] = useState<number>(3)
+  const [simulatedRainfall, setSimulatedRainfall] = useState<number>(latestRainfall || 65)
+  const [sumpInitialWater, setSumpInitialWater] = useState<number>(12500) // m³
+
+  // Constants
+  const PIT_CATCHMENT_KM2 = 0.85
+  const RUNOFF_COEFF = 0.65 // Runoff coefficient for fractured hard rock pit walls
+  const SUMP_MAX_CAPACITY = 25000 // m³
+  const PUMP_RATED_CAPACITY_M3HR = 850 // m³/hr per submersible slurry pump
+
+  // Computations
+  // Inflow volume rate = (Rainfall mm * 10^-3) * (Catchment * 10^6) * Runoff / 24 hrs
+  const hourlyInflowM3 = Math.round((simulatedRainfall * PIT_CATCHMENT_KM2 * 1000 * RUNOFF_COEFF) / 24)
+  const totalPumpDischargeRateM3 = activePumps * PUMP_RATED_CAPACITY_M3HR
+  const netWaterAccumulationRateM3 = hourlyInflowM3 - totalPumpDischargeRateM3
+
+  // Current volume & status
+  const currentSumpWaterM3 = Math.min(SUMP_MAX_CAPACITY, Math.max(2000, sumpInitialWater + netWaterAccumulationRateM3 * 2))
+  const sumpFillPct = Math.round((currentSumpWaterM3 / SUMP_MAX_CAPACITY) * 100)
+
+  let overflowRisk = 'SAFE'
+  let hoursToOverflow = Infinity
+  let hoursToClear = 0
+
+  if (netWaterAccumulationRateM3 > 0) {
+    const remainingCapacity = SUMP_MAX_CAPACITY - currentSumpWaterM3
+    hoursToOverflow = Number((remainingCapacity / netWaterAccumulationRateM3).toFixed(1))
+    overflowRisk = hoursToOverflow < 8 ? 'CRITICAL' : hoursToOverflow < 24 ? 'WARNING' : 'MODERATE'
+  } else if (netWaterAccumulationRateM3 < 0) {
+    hoursToClear = Number((currentSumpWaterM3 / Math.abs(netWaterAccumulationRateM3)).toFixed(1))
+    overflowRisk = 'SAFE'
+  }
+
+  const handleAutoDispatch = () => {
+    // Dispatch enough pumps to ensure negative net accumulation
+    const requiredPumps = Math.min(5, Math.ceil(hourlyInflowM3 / PUMP_RATED_CAPACITY_M3HR) + 1)
+    setActivePumps(requiredPumps)
+  }
+
+  return (
+    <div className="card border-accent-blue/30 bg-gradient-to-br from-bg-900 via-bg-900 to-blue-950/20 p-5 space-y-5 shadow-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-surface-border">
+        <div>
+          <div className="flex items-center gap-2">
+            <Droplets className="w-5 h-5 text-accent-cyan" />
+            <h2 className="text-lg font-bold text-text-primary">Space-Based Pit Sump Inundation & Dewatering Engine</h2>
+            <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${
+              overflowRisk === 'CRITICAL' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+              overflowRisk === 'WARNING' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+              'bg-green-500/20 text-green-400 border border-green-500/30'
+            }`}>
+              {overflowRisk} STATUS
+            </span>
+          </div>
+          <p className="text-xs text-text-muted mt-0.5">
+            Real-time satellite precipitation integration, pit catchment runoff hydrograph & sump pump discharge balancing
+          </p>
+        </div>
+
+        <button
+          onClick={handleAutoDispatch}
+          className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 self-start sm:self-auto shadow-md"
+        >
+          <Wind className="w-3.5 h-3.5" /> Auto-Dispatch Pumps
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Controls Column */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="text-xs font-bold text-text-primary uppercase tracking-wider">Hydrological Variables</div>
+
+          {/* Rainfall Intensity Slider */}
+          <div className="p-3 rounded-xl bg-surface-muted/30 border border-surface-border space-y-1.5 text-xs">
+            <div className="flex justify-between font-medium">
+              <span className="text-text-secondary">Simulated Precipitation (GPM/IMD):</span>
+              <span className="font-mono font-bold text-accent-cyan">{simulatedRainfall} mm/day</span>
+            </div>
+            <input
+              type="range" min="0" max="180" step="5"
+              value={simulatedRainfall} onChange={(e) => setSimulatedRainfall(Number(e.target.value))}
+              className="w-full accent-cyan-400 h-1.5 bg-bg-800 rounded-lg cursor-pointer"
+            />
+            <div className="flex justify-between text-[10px] text-text-muted">
+              <span>Dry (0mm)</span>
+              <span>Monsoon Deluge (180mm)</span>
+            </div>
+          </div>
+
+          {/* Dewatering Pumps Online Slider */}
+          <div className="p-3 rounded-xl bg-surface-muted/30 border border-surface-border space-y-1.5 text-xs">
+            <div className="flex justify-between font-medium">
+              <span className="text-text-secondary">Active Slurry Pumps Online:</span>
+              <span className="font-mono font-bold text-green-400">{activePumps} / 5 Pumps</span>
+            </div>
+            <input
+              type="range" min="1" max="5" step="1"
+              value={activePumps} onChange={(e) => setActivePumps(Number(e.target.value))}
+              className="w-full accent-green-400 h-1.5 bg-bg-800 rounded-lg cursor-pointer"
+            />
+            <div className="text-[10px] text-text-muted">
+              Rated Capacity: {activePumps * PUMP_RATED_CAPACITY_M3HR} m³/hr ({activePumps} × 850 m³/hr)
+            </div>
+          </div>
+
+          {/* Static Pit Geo Info */}
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="p-2.5 rounded-lg bg-surface-muted/20 border border-surface-border">
+              <div className="text-[10px] text-text-muted">Pit Catchment Area</div>
+              <div className="font-mono font-bold text-text-primary mt-0.5">0.85 km²</div>
+            </div>
+            <div className="p-2.5 rounded-lg bg-surface-muted/20 border border-surface-border">
+              <div className="text-[10px] text-text-muted">Sump Max Capacity</div>
+              <div className="font-mono font-bold text-text-primary mt-0.5">25,000 m³</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic Water Balance Display */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="grid grid-cols-3 gap-3 text-xs">
+            <div className="p-3 rounded-xl bg-surface-muted border border-surface-border">
+              <div className="text-[10px] text-text-muted uppercase">Runoff Inflow</div>
+              <div className="text-xl font-black text-cyan-400 font-mono mt-1">
+                {hourlyInflowM3.toLocaleString()} <span className="text-xs font-normal text-text-muted">m³/h</span>
+              </div>
+              <div className="text-[9px] text-text-muted mt-0.5">Catchment Inflow</div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-surface-muted border border-surface-border">
+              <div className="text-[10px] text-text-muted uppercase">Pump Discharge</div>
+              <div className="text-xl font-black text-green-400 font-mono mt-1">
+                {totalPumpDischargeRateM3.toLocaleString()} <span className="text-xs font-normal text-text-muted">m³/h</span>
+              </div>
+              <div className="text-[9px] text-text-muted mt-0.5">{activePumps} High-Head Pumps</div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-surface-muted border border-surface-border">
+              <div className="text-[10px] text-text-muted uppercase">Net Sump Trend</div>
+              <div className={`text-xl font-black font-mono mt-1 ${netWaterAccumulationRateM3 > 0 ? 'text-red-400' : 'text-green-400'}`}>
+                {netWaterAccumulationRateM3 > 0 ? `+${netWaterAccumulationRateM3}` : netWaterAccumulationRateM3} <span className="text-xs font-normal text-text-muted">m³/h</span>
+              </div>
+              <div className="text-[9px] text-text-muted mt-0.5">
+                {netWaterAccumulationRateM3 > 0 ? '⚠️ Water Rising' : '✓ Dewatering Steady'}
+              </div>
+            </div>
+          </div>
+
+          {/* Sump Capacity Bar */}
+          <div className="p-4 rounded-xl bg-surface-muted/40 border border-surface-border space-y-2">
+            <div className="flex justify-between text-xs font-medium">
+              <span className="text-text-secondary">Current Pit Sump Water Level:</span>
+              <span className="font-mono font-bold text-text-primary">
+                {currentSumpWaterM3.toLocaleString()} / {SUMP_MAX_CAPACITY.toLocaleString()} m³ ({sumpFillPct}%)
+              </span>
+            </div>
+            
+            <div className="w-full bg-bg-900 rounded-full h-4 overflow-hidden p-0.5 border border-surface-border">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  sumpFillPct > 85 ? 'bg-gradient-to-r from-red-600 to-rose-500' :
+                  sumpFillPct > 60 ? 'bg-gradient-to-r from-amber-500 to-orange-400' :
+                  'bg-gradient-to-r from-cyan-500 to-blue-500'
+                }`}
+                style={{ width: `${Math.min(100, sumpFillPct)}%` }}
+              />
+            </div>
+
+            <div className="flex justify-between text-[10px] text-text-muted pt-1">
+              <span>0% (Dry Floor)</span>
+              <span>50% Warning Line</span>
+              <span>100% Inundation Cutoff</span>
+            </div>
+          </div>
+
+          {/* Warning / Guidance Callout */}
+          <div className={`p-3 rounded-xl border flex items-center gap-3 text-xs ${
+            overflowRisk === 'CRITICAL'
+              ? 'bg-red-500/10 border-red-500/30 text-red-300'
+              : overflowRisk === 'WARNING'
+              ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+              : 'bg-green-500/10 border-green-500/30 text-green-300'
+          }`}>
+            <Droplets className="w-4 h-4 flex-shrink-0" />
+            <div className="leading-tight">
+              {netWaterAccumulationRateM3 > 0 ? (
+                <span>
+                  <strong>Haulage Inundation Warning:</strong> Inflow exceeds discharge by {netWaterAccumulationRateM3} m³/hr. Estimated pit floor overflow in <strong>{hoursToOverflow} hours</strong> if extra pumps are not mobilized.
+                </span>
+              ) : (
+                <span>
+                  <strong>Safe Dewatering Equilibrium:</strong> Pump discharge rate exceeds inflow by {Math.abs(netWaterAccumulationRateM3)} m³/hr. Pit floor is dry and haul roads remain fully accessible.
+                </span>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  )
+}
+
