@@ -449,6 +449,141 @@ def get_models():
         "disclaimer": "All metrics generated from synthetic demonstration datasets. Not representative of real-world MOIL performance."
     }
 
+# ── Copilot Generative LLM Chat Endpoint ───────────────────────────────────────
+import urllib.request
+import urllib.error
+
+class CopilotChatInput(BaseModel):
+    query: str
+    lang: str = "en"
+    history: Optional[List[dict]] = []
+    api_key: Optional[str] = None
+
+@app.post("/api/copilot/chat")
+def copilot_chat(payload: CopilotChatInput):
+    gemini_key = payload.api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    query = payload.query.strip()
+    lang = payload.lang
+
+    # 1. System Prompt Context (RAG Domain Grounding)
+    system_context = """You are OreSeek AI Copilot, an elite mining geologist and operations intelligence assistant engineered for MOIL Limited (Ministry of Steel) and Smart India Hackathon PS-26009.
+Operational Knowledge Base:
+- Active Deposits: Balaghat North Extension (Score 91%, 31.2% Mn), Sitasaongi North (88%), Dongri Buzurg South (83%), Ukwa (76%), Tirodi (72%).
+- In-situ Geological Reserves: 14.8 Million Tonnes (Mt) under UNFC standards (UNFC 111 Proved: 6.2 Mt @ 36.4% Mn; UNFC 122 Probable: 5.4 Mt @ 29.8% Mn; UNFC 333 Inferred: 3.2 Mt @ 22.5% Mn).
+- Shortfall Risk: 68% probability of a 22,400-tonne production shortfall over the next 60 days. Main SHAP factors: Equipment Downtime (31%), Monsoon Haulage Delays (24%), Blasting Delays (18%).
+- Prescriptive Mitigations: Deploy 2 standby excavators to Pit Floor 4 (+4.5% output), Smart 60:40 Ore Blending (Balaghat:Tirodi, +3.2% output), Pre-clearing pit sump pumps (+1.7% output). Total recovery: +9.4% (+15,600t).
+- Satellite Tech: Sentinel-2 & Landsat-8/9 Band Ratios: Iron Oxide (B4/B2), Clay Alteration (B11/B12), Ferrous Silicate (B11/B8).
+- Critical HEMM Machine: Excavator EXC-02 (68.2% availability, overdue 64 days), Drill DRL-02 (72.0% availability).
+
+Formatting Instructions:
+- Keep answers structured, professional, authoritative, and concise using markdown bullet points and bold highlights.
+- If the user writes or language is 'hi', respond in clear, fluent Hindi (or Hinglish if asked in Hinglish).
+- Always recommend concrete operational actions or exploration programs."""
+
+    # 2. Try Gemini API if key is available
+    if gemini_key:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+            
+            # Format contents
+            contents = []
+            for h in payload.history[-4:]:
+                contents.append({
+                    "role": "user" if h.get("sender") == "user" else "model",
+                    "parts": [{"text": h.get("text", "")}]
+                })
+            contents.append({"role": "user", "parts": [{"text": f"User query in {lang} language: {query}"}]})
+
+            req_body = json.dumps({
+                "system_instruction": {"parts": [{"text": system_context}]},
+                "contents": contents,
+                "generationConfig": {
+                    "temperature": 0.4,
+                    "maxOutputTokens": 800,
+                    "topP": 0.95
+                }
+            }).encode('utf-8')
+
+            req = urllib.request.Request(
+                url,
+                data=req_body,
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+
+            with urllib.request.urlopen(req, timeout=8) as response:
+                if response.status == 200:
+                    resp_data = json.loads(response.read().decode('utf-8'))
+                    candidates = resp_data.get("candidates", [])
+                    if candidates:
+                        gen_text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                        if gen_text:
+                            # Dynamic deep link action suggestion
+                            actions = []
+                            q_lower = query.lower()
+                            if any(w in q_lower for w in ["target", "exploration", "drill", "satellite", "map", "लक्ष्य", "अन्वेषण"]):
+                                actions.append({"label": "📍 View GIS Exploration Map", "path": "/exploration"})
+                            if any(w in q_lower for w in ["reserve", "unfc", "3d", "block", "voxel", "भंडार", "संसाधन"]):
+                                actions.append({"label": "🧊 Open 3D Voxel Model", "path": "/resources"})
+                            if any(w in q_lower for w in ["shortfall", "simulate", "blending", "blast", "कमी", "सिम्युलेटर"]):
+                                actions.append({"label": "⚡ Run What-If Simulator", "path": "/simulator"})
+                            if any(w in q_lower for w in ["equipment", "machine", "excavator", "dumper", "उपकरण"]):
+                                actions.append({"label": "🚜 Equipment Telematics", "path": "/equipment"})
+
+                            return {
+                                "reply": gen_text,
+                                "model_used": "google-gemini-1.5-flash",
+                                "source": "GENAI_LLM",
+                                "actions": actions
+                            }
+        except Exception as e:
+            print(f"[WARN] Gemini API call error: {e}. Falling back to domain RAG engine.")
+
+    # 3. Intelligent Domain RAG Fallback
+    q_lower = query.lower()
+    if any(w in q_lower for w in ["target", "priority", "balaghat", "prospectivity", "drill", "zone", "लक्ष्य", "प्राथमिकता", "बालाघाट", "अन्वेषण"]):
+        reply_en = "**MN-TARGET-01 (Balaghat North Extension)** is ranked as the **#1 Exploration Target** with a **91% AI Prospectivity Score** and **84% Confidence**:\n• **Estimated Grade**: 31.2% Mn across 3.2 km² surface area.\n• **Space Spectral Signature**: Strong Sentinel-2 hydrothermal iron/clay alteration anomaly (B4/B2 ratio: 1.48).\n• **Geological Marker**: Direct strike continuation of the high-grade Mansar Formation Gondite ore bed.\n• **Recommended Program**: Immediate 50m grid diamond core drilling along the northern synclinal fold limb."
+        reply_hi = "**MN-TARGET-01 (बालाघाट उत्तर विस्तार)** को **91% एआई संभावना स्कोर** और **84% विश्वास** के साथ **सर्वोच्च अन्वेषण लक्ष्य** घोषित किया गया है:\n• **अनुमानित ग्रेड**: 3.2 वर्ग किलोमीटर क्षेत्र में 31.2% मैंगनीज।\n• **उपग्रह स्पेक्ट्रल हस्ताक्षर**: सेंटिनल-2 द्वारा हाइड्रोथर्मल आयरन एवं क्ले विसंगति की पुष्टि (B4/B2 अनुपात: 1.48)।\n• **भूवैज्ञानिक संरचना**: उच्च-ग्रेड मनसर फॉर्मेशन गोंडाइट अयस्क परत का सीधा विस्तार।\n• **अनुशंसित कार्यक्रम**: उत्तरी अभिनति मोड़ पर तत्काल 50 मीटर ग्रिड डायमंड कोर ड्रिलिंग।"
+        actions = [
+            {"label": "📍 View GIS Exploration Map", "path": "/exploration"},
+            {"label": "🧊 Open 3D Voxel Model", "path": "/resources"}
+        ]
+    elif any(w in q_lower for w in ["shortfall", "monsoon", "gap", "delay", "recover", "mitigation", "कमी", "घाटा", "मानसून", "भरपाई"]):
+        reply_en = "The predictive XGBoost model flags a **68% probability of a 22,400-tonne production shortfall** over the next 60 days.\n\n**Key Root Causes Identified by SHAP Attribution:**\n1. **Equipment Downtime (31%)**: Excavator EXC-02 & Drill DRL-02 overdue for overhaul.\n2. **Monsoon Haulage Delays (24%)**: 210mm forecasted rainfall causing pit ramp slippage.\n3. **Blasting Stoppages (18%)**: Water accumulation in bench blast holes.\n\n**Prescriptive AI Mitigation Package (+9.4% / +15,600t Recovery):**\n• **Action 1**: Deploy 2 standby excavators to Pit Floor 4 (+4.5% output).\n• **Action 2**: Smart Ore Blending (Balaghat 42% + Tirodi 28% at 60:40 ratio) (+3.2% output).\n• **Action 3**: Advance pit sump drainage pumping before rain fronts (+1.7% output)."
+        reply_hi = "पूर्वानुमानित XGBoost मॉडल अगले 60 दिनों में **22,400 टन उत्पादन कमी की 68% संभावना** की चेतावनी देता है।\n\n**SHAP एट्रिब्यूशन द्वारा चिन्हित मुख्य कारण:**\n1. **उपकरण खराबी (31%)**: उत्खननकर्ता EXC-02 और ड्रिल DRL-02 का रखरखाव लंबित।\n2. **मानसून परिवहन देरी (24%)**: 210 मिमी अनुमानित वर्षा के कारण रैंप फिसलन।\n3. **ब्लास्टिंग रुकावट (18%)**: बेंच ब्लास्ट होल में पानी का जमाव।\n\n**उपचारात्मक एआई कार्ययोजना (+9.4% / +15,600 टन भरपाई):**\n• **कदम 1**: पिट फ्लोर 4 पर 2 स्टैंडबाय उत्खननकर्ता तैनात करें (+4.5% उत्पादन)।\n• **कदम 2**: स्मार्ट अयस्क सम्मिश्रण (बालाघाट 42% + तिरोड़ी 28% को 60:40 अनुपात में) (+3.2% उत्पादन)।\n• **कदम 3**: वर्षा से पहले पिट संप जल निकासी पंपिंग बढ़ाएं (+1.7% उत्पादन)।"
+        actions = [
+            {"label": "⚡ Run What-If Simulator", "path": "/simulator"},
+            {"label": "🤖 View SHAP Explanations", "path": "/ai"}
+        ]
+    elif any(w in q_lower for w in ["unfc", "reserve", "tonnage", "resource", "111", "122", "333", "भंडार", "संसाधन", "टन"]):
+        reply_en = "OreSeek calculates a total in-situ geological reserve of **14.8 Million Tonnes (Mt)** with **82% Kriging Confidence** across the Sausar Belt:\n\n**UNFC Standard Breakdown:**\n• **UNFC 111 (Proved / Measured)**: **6.2 Mt** @ **36.4% Mn** (High drilling density, 50m spacing)\n• **UNFC 122 (Probable / Indicated)**: **5.4 Mt** @ **29.8% Mn** (100m spacing, structural continuity)\n• **UNFC 333 (Inferred Resource)**: **3.2 Mt** @ **22.5% Mn** (Satellite spectral & magnetic anomaly extrapolation)\n\nThe 3D Maptek-style voxel engine supports real-time cutoff grade filtering between 15% and 45% Mn."
+        reply_hi = "ओरसीक सौसर बेल्ट में **82% क्रिगिंग विश्वास** के साथ कुल **14.8 मिलियन टन** भूगर्भीय भंडार का आकलन करता है:\n\n**UNFC मानक वर्गीकरण:**\n• **UNFC 111 (प्रमाणित भंडार)**: **6.2 मिलियन टन** @ **36.4% मैंगनीज** (50 मीटर सघन ड्रिलिंग)\n• **UNFC 122 (संभावित भंडार)**: **5.4 मिलियन टन** @ **29.8% मैंगनीज** (100 मीटर ड्रिलिंग)\n• **UNFC 333 (अनुमानित संसाधन)**: **3.2 मिलियन टन** @ **22.5% मैंगनीज** (उपग्रह स्पेक्ट्रल अनुमान)\n\n3D वोक्सेल इंजन 15% से 45% मैंगनीज कटऑफ ग्रेड फ़िल्टरिंग का समर्थन करता है।"
+        actions = [
+            {"label": "🧊 Open 3D Voxel Block Model", "path": "/resources"},
+            {"label": "📊 View Production Trajectory", "path": "/production"}
+        ]
+    elif any(w in q_lower for w in ["equipment", "machine", "excavator", "dumper", "drill", "maintenance", "telemetry", "उपकरण", "मशीन"]):
+        reply_en = "Live HEMM telematics monitoring tracks **12 active mining assets**:\n\n⚠️ **Critical Alerts:**\n• **EXC-02 (Excavator - Dongri Buzurg)**: Availability down to **68.2%**. Hydraulic pressure oscillating (4.8 bar). **Overdue by 64 days**. Estimated RUL: **18 operating hours**.\n• **DRL-02 (Drill Rig - Dongri Buzurg)**: Availability at **72.0%**. Bearing vibration spike (3.8 mm/s). Maintenance **Overdue**.\n\n✅ **Recommended Workflow:**\nReallocate standby unit **EXC-01** (89.5% avail) to Pit Floor 4 immediately while sending EXC-02 to the central workshop."
+        reply_hi = "लाइव उपकरण टेलीमैटिक्स **12 सक्रिय खनन मशीनों** की निगरानी कर रहा है:\n\n⚠️ **गंभीर चेतावनियां:**\n• **EXC-02 (उत्खननकर्ता - डोंगरी बुजुर्ग)**: उपलब्धता घटकर **68.2%**। हाइड्रोलिक दबाव में उतार-चढ़ाव। **64 दिनों से लंबित**। शेष जीवन (RUL): **18 घंटे**।\n• **DRL-02 (ड्रिल रिग - डोंगरी बुजुर्ग)**: उपलब्धता **72.0%**। बेयरिंग कंपन वृद्धि (3.8 मिमी/सेकंड)।\n\n✅ **अनुशंसित कार्य:**\nस्टैंडबाय मशीन **EXC-01** (89.5% उपलब्धता) को तुरंत पिट फ्लोर 4 पर लगाएं तथा EXC-02 को कार्यशाला भेजें।"
+        actions = [
+            {"label": "🚜 Open Equipment Telematics", "path": "/equipment"},
+            {"label": "⚡ Run Fleet Simulator", "path": "/simulator"}
+        ]
+    else:
+        reply_en = f"Based on current **OreSeek Intelligence Stream** regarding '{query}':\n• **Target Priority**: Balaghat North (91%) & Sitasaongi North (88%) represent the primary high-grade targets.\n• **Reserve Base**: 14.8 Mt estimated manganese in-situ across JORC/UNFC 111 & 122 classifications.\n• **Operational Flag**: 68% monsoon shortfall risk active. Prescriptive actions show **+9.4% capacity recovery** through excavator standby reallocation and smart 60:40 ore blending."
+        reply_hi = f"आपकी खोज '{query}' के संदर्भ में वर्तमान **ओरसीक आसूचना सारांश**:\n• **अन्वेषण प्राथमिकता**: बालाघाट उत्तर (91%) और सीतासावंगी उत्तर (88%) मुख्य उच्च-ग्रेड लक्ष्य हैं।\n• **कुल भंडार**: UNFC 111 और 122 मानकों में 14.8 मिलियन टन मैंगनीज प्रमाणित।\n• **परिचालन जोखिम**: 68% उत्पादन कमी का जोखिम सक्रिय। उत्खननकर्ता पुनः आवंटन द्वारा **+9.4% उत्पादन भरपाई** संभव है।"
+        actions = [
+            {"label": "📊 Open Command Center", "path": "/dashboard"},
+            {"label": "🎛️ Run What-If Simulation", "path": "/simulator"}
+        ]
+
+    return {
+        "reply": reply_hi if lang == "hi" else reply_en,
+        "model_used": "oreseek-domain-rag-v1",
+        "source": "DOMAIN_RAG",
+        "actions": actions
+    }
+
 # ── Health ─────────────────────────────────────────────────────────────────────
 @app.get("/api/health")
 def health():
@@ -457,3 +592,4 @@ def health():
 @app.get("/")
 def root():
     return {"message": "OreSeek API — SIH 2026", "docs": "/docs"}
+

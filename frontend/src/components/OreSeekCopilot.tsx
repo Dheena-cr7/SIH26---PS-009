@@ -7,6 +7,7 @@ import {
   ExternalLink, Layers, Activity, Radio
 } from 'lucide-react'
 import { useLanguage, DICTIONARY } from '../services/i18n'
+import { askCopilot } from '../services/api'
 
 interface Message {
   id: string
@@ -210,6 +211,9 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
   const [isTyping, setIsTyping] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('oreseek_gemini_key') || '')
+  const [showKeyConfig, setShowKeyConfig] = useState(false)
+  const [activeModel, setActiveModel] = useState<string>('GEMINI 1.5 FLASH')
 
   const silenceTimerRef = useRef<any>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
@@ -459,7 +463,7 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
     }
   }
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const query = (textToSend || inputQuery).trim()
     if (!query) return
 
@@ -477,18 +481,53 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
     setInputQuery('')
     setIsTyping(true)
 
-    setTimeout(() => {
-      const match = findBestResponse(query)
-      const assistantMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        sender: 'assistant',
-        text: match.reply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        actions: match.actions
+    try {
+      // Connect to Live Gemini LLM or Backend AI Gateway
+      const historyPayload = messages.slice(-4).map(m => ({ sender: m.sender, text: m.text }))
+      const llmResult = await askCopilot({
+        query,
+        lang,
+        history: historyPayload,
+        api_key: apiKey
+      })
+
+      if (llmResult && llmResult.reply) {
+        setActiveModel(llmResult.model_used ? `⚡ ${llmResult.model_used.toUpperCase()}` : '⚡ GEMINI 1.5 FLASH')
+        const assistantMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          sender: 'assistant',
+          text: llmResult.reply,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          actions: llmResult.actions || [
+            { label: lang === 'hi' ? "📍 जीआईएस अन्वेषण देखें" : "📍 View Exploration GIS", path: "/exploration" },
+            { label: lang === 'hi' ? "🧊 3D ब्लॉक मॉडल" : "🧊 Open 3D Voxel Model", path: "/resources" }
+          ]
+        }
+        setMessages(prev => [...prev, assistantMsg])
+        setIsTyping(false)
+        return
       }
-      setMessages(prev => [...prev, assistantMsg])
-      setIsTyping(false)
-    }, 550)
+    } catch (err) {
+      console.warn('Live LLM connection fallback engaged:', err)
+    }
+
+    // Hybrid Domain RAG Fallback
+    const match = findBestResponse(query)
+    const assistantMsg: Message = {
+      id: (Date.now() + 1).toString(),
+      sender: 'assistant',
+      text: match.reply,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      actions: match.actions
+    }
+    setMessages(prev => [...prev, assistantMsg])
+    setIsTyping(false)
+  }
+
+  const handleSaveApiKey = (key: string) => {
+    setApiKey(key)
+    localStorage.setItem('oreseek_gemini_key', key)
+    setShowKeyConfig(false)
   }
 
   const handleActionClick = (action: { label: string; path?: string; actionType?: string }) => {
@@ -552,11 +591,11 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
       {isOpen && (
         <div
           className={`fixed right-6 z-50 transition-all duration-300 ease-out flex flex-col rounded-2xl border border-accent-orange/40 bg-bg-900/95 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.85)] overflow-hidden ${
-            isMinimized ? 'bottom-6 w-80 h-14' : 'bottom-6 w-[420px] max-w-[calc(100vw-2rem)] h-[620px] max-h-[calc(100vh-5rem)]'
+            isMinimized ? 'bottom-6 w-80 h-14' : 'bottom-6 w-[430px] max-w-[calc(100vw-2rem)] h-[630px] max-h-[calc(100vh-5rem)]'
           }`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3.5 bg-gradient-to-r from-bg-800 to-bg-900 border-b border-surface-border">
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-bg-800 to-bg-900 border-b border-surface-border">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-accent-orange to-orange-600 flex items-center justify-center text-white shadow-md flex-shrink-0">
                 <Bot className="w-4 h-4" />
@@ -564,15 +603,27 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
                   <h3 className="text-xs font-black tracking-wider text-text-primary uppercase truncate">{t('copilotTitle')}</h3>
-                  <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-green-500/20 text-green-400 border border-green-500/30">
-                    LIVE ML
-                  </span>
+                  <button
+                    onClick={() => setShowKeyConfig(!showKeyConfig)}
+                    className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/30 transition-colors flex items-center gap-1"
+                    title="Click to configure Google Gemini API Key"
+                  >
+                    <Sparkles className="w-2.5 h-2.5 text-cyan-300" />
+                    <span className="truncate max-w-[120px]">{activeModel}</span>
+                  </button>
                 </div>
                 <div className="text-[10px] text-text-muted truncate">{t('copilotSubtitle')}</div>
               </div>
             </div>
 
             <div className="flex items-center gap-1 text-text-muted">
+              <button
+                onClick={() => setShowKeyConfig(!showKeyConfig)}
+                className={`p-1.5 rounded-lg transition-colors ${showKeyConfig ? 'text-accent-orange bg-surface-muted' : 'hover:text-text-primary hover:bg-surface-hover'}`}
+                title="Configure Gemini API Key"
+              >
+                <Sliders className="w-3.5 h-3.5" />
+              </button>
               <button
                 onClick={handleResetChat}
                 className="p-1.5 hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
@@ -600,6 +651,45 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
               </button>
             </div>
           </div>
+
+          {/* Gemini API Key Configuration Drawer */}
+          {showKeyConfig && !isMinimized && (
+            <div className="p-3 bg-bg-950 border-b border-accent-orange/30 text-xs animate-fadeIn">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="font-bold text-text-primary flex items-center gap-1.5 text-[11px]">
+                  <Sparkles className="w-3.5 h-3.5 text-accent-orange" />
+                  Google Gemini 1.5 Flash Connection
+                </span>
+                <button
+                  onClick={() => setShowKeyConfig(false)}
+                  className="text-text-muted hover:text-text-primary text-[10px]"
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="text-[10px] text-text-muted mb-2">
+                OreSeek AI connects to Gemini 1.5 Flash with live domain grounding. Enter a Gemini API key or use the built-in AI gateway:
+              </p>
+              <div className="flex items-center gap-2">
+                <input
+                  type="password"
+                  placeholder="AIzaSy... (Gemini API Key)"
+                  defaultValue={apiKey}
+                  id="gemini-key-input"
+                  className="flex-1 px-2.5 py-1.5 bg-bg-900 border border-surface-border rounded-lg text-xs text-text-primary focus:border-accent-orange outline-none"
+                />
+                <button
+                  onClick={() => {
+                    const input = document.getElementById('gemini-key-input') as HTMLInputElement
+                    if (input) handleSaveApiKey(input.value.trim())
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-accent-orange hover:bg-orange-600 text-white font-bold text-[11px] transition-colors"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          )}
 
           {!isMinimized && (
             <>
