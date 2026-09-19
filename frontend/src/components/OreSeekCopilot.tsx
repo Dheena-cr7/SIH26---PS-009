@@ -4,7 +4,7 @@ import {
   Bot, Sparkles, Send, X, Minimize2, Maximize2, Mic, MicOff,
   Volume2, VolumeX, RotateCcw, ArrowRight, MapPin, Database,
   Sliders, Brain, Wrench, ShieldAlert, CheckCircle2, ChevronRight,
-  ExternalLink, Layers, Activity
+  ExternalLink, Layers, Activity, Radio
 } from 'lucide-react'
 import { useLanguage, DICTIONARY } from '../services/i18n'
 
@@ -42,16 +42,16 @@ interface KnowledgeItem {
 
 const KNOWLEDGE_RESPONSES: KnowledgeItem[] = [
   {
-    keywords: ["target", "priority", "balaghat", "prospectivity", "exploration", "drill", "लक्ष्य", "प्राथमिकता", "बालाघाट", "अन्वेषण", "संभावना"],
+    keywords: ["target", "priority", "balaghat", "prospectivity", "exploration", "drill", "zone", "लक्ष्य", "प्राथमिकता", "बालाघाट", "अन्वेषण", "संभावना", "ड्रिल", "कहाँ", "batao", "kaha"],
     replyEn: `**MN-TARGET-01 (Balaghat North Extension)** is ranked as the **#1 Exploration Target** with a **91% AI Prospectivity Score** and **84% Confidence**:
 • **Estimated Grade**: 31.2% Mn across 3.2 km² surface area.
 • **Space Spectral Signature**: Strong Sentinel-2 hydrothermal iron/clay alteration anomaly (B4/B2 ratio: 1.48).
 • **Geological Marker**: Direct strike continuation of the high-grade Mansar Formation Gondite ore bed.
 • **Recommended Program**: Immediate 50m grid diamond core drilling along the northern synclinal fold limb.`,
-    replyHi: `**MN-TARGET-01 (बालाघाट उत्तर विस्तार)** को **91% एआई संभावना स्कोर** और **84% विश्वास** के साथ **#1 अन्वेषण लक्ष्य** के रूप में स्थान दिया गया है:
-• **अनुमानित ग्रेड**: 3.2 वर्ग किमी क्षेत्र में 31.2% मैंगनीज (Mn)।
-• **अंतरिक्ष स्पेक्ट्रल हस्ताक्षर**: मजबूत सेंटिनल-2 हाइड्रोथर्मल आयरन/क्ले विसंगति (B4/B2 अनुपात: 1.48)।
-• **भूवैज्ञानिक मार्कर**: उच्च-ग्रेड मनसर फॉर्मेशन गोंडाइट अयस्क परत का सीधा विस्तार।
+    replyHi: `**MN-TARGET-01 (बालाघाट उत्तर विस्तार)** को **91% एआई संभावना स्कोर** और **84% विश्वास** के साथ **सर्वोच्च अन्वेषण लक्ष्य** घोषित किया गया है:
+• **अनुमानित ग्रेड**: 3.2 वर्ग किलोमीटर क्षेत्र में 31.2% मैंगनीज।
+• **उपग्रह स्पेक्ट्रल हस्ताक्षर**: सेंटिनल-2 द्वारा हाइड्रोथर्मल आयरन एवं क्ले विसंगति की पुष्टि (B4/B2 अनुपात: 1.48)।
+• **भूवैज्ञानिक संरचना**: उच्च-ग्रेड मनसर फॉर्मेशन गोंडाइट अयस्क परत का सीधा विस्तार।
 • **अनुशंसित कार्यक्रम**: उत्तरी अभिनति मोड़ पर तत्काल 50 मीटर ग्रिड डायमंड कोर ड्रिलिंग।`,
     actionsEn: [
       { label: "📍 View Balaghat on GIS Map", path: "/exploration" },
@@ -59,11 +59,11 @@ const KNOWLEDGE_RESPONSES: KnowledgeItem[] = [
     ],
     actionsHi: [
       { label: "📍 जीआईएस मानचित्र पर बालाघाट देखें", path: "/exploration" },
-      { label: "🧊 3D ब्लॉक मॉडल का निरीक्षण करें", path: "/resources" }
+      { label: "🧊 3D ब्लॉक मॉडल देखें", path: "/resources" }
     ]
   },
   {
-    keywords: ["shortfall", "deficit", "monsoon", "recover", "mitigation", "22,000", "gap", "delay", "कमी", "घाटा", "मानसून", "भरपाई", "सुधार"],
+    keywords: ["shortfall", "deficit", "monsoon", "recover", "mitigation", "22,000", "gap", "delay", "loss", "कमी", "घाटा", "मानसून", "भरपाई", "सुधार", "समाधान", "nuksan"],
     replyEn: `The predictive XGBoost model flags a **68% probability of a 22,400-tonne production shortfall** over the next 60 days.
 
 **Key Root Causes Identified by SHAP Attribution:**
@@ -75,16 +75,16 @@ const KNOWLEDGE_RESPONSES: KnowledgeItem[] = [
 • **Action 1**: Deploy 2 standby excavators to Pit Floor 4 (+4.5% output).
 • **Action 2**: Smart Ore Blending (Balaghat 42% + Tirodi 28% at 60:40 ratio) (+3.2% output).
 • **Action 3**: Advance pit sump drainage pumping before rain fronts (+1.7% output).`,
-    replyHi: `पूर्वानुमानित XGBoost मॉडल अगले 60 दिनों में **22,400 टन उत्पादन कमी की 68% संभावना** की पहचान करता है।
+    replyHi: `पूर्वानुमानित XGBoost मॉडल अगले 60 दिनों में **22,400 टन उत्पादन कमी की 68% संभावना** की चेतावनी देता है।
 
-**SHAP एट्रिब्यूशन द्वारा पहचाने गए मुख्य कारण:**
-1. **उपकरण खराबी (31%)**: उत्खननकर्ता EXC-02 और ड्रिल DRL-02 ओवरहाल हेतु लंबित।
+**SHAP एट्रिब्यूशन द्वारा चिन्हित मुख्य कारण:**
+1. **उपकरण खराबी (31%)**: उत्खननकर्ता EXC-02 और ड्रिल DRL-02 का रखरखाव लंबित।
 2. **मानसून परिवहन देरी (24%)**: 210 मिमी अनुमानित वर्षा के कारण रैंप फिसलन।
 3. **ब्लास्टिंग रुकावट (18%)**: बेंच ब्लास्ट होल में पानी का जमाव।
 
 **उपचारात्मक एआई कार्ययोजना (+9.4% / +15,600 टन भरपाई):**
 • **कदम 1**: पिट फ्लोर 4 पर 2 स्टैंडबाय उत्खननकर्ता तैनात करें (+4.5% उत्पादन)।
-• **कदम 2**: स्मार्ट अयस्क सम्मिश्रण (बालाघाट 42% + तिरोड़ी 28% 60:40 अनुपात में) (+3.2% उत्पादन)।
+• **कदम 2**: स्मार्ट अयस्क सम्मिश्रण (बालाघाट 42% + तिरोड़ी 28% को 60:40 अनुपात में) (+3.2% उत्पादन)।
 • **कदम 3**: वर्षा से पहले पिट संप जल निकासी पंपिंग बढ़ाएं (+1.7% उत्पादन)।`,
     actionsEn: [
       { label: "🎛️ Test Mitigations in Simulator", path: "/simulator" },
@@ -96,7 +96,7 @@ const KNOWLEDGE_RESPONSES: KnowledgeItem[] = [
     ]
   },
   {
-    keywords: ["unfc", "reserve", "tonnage", "resource", "111", "122", "333", "grade", "3d", "भंडार", "संसाधन", "टन", "ग्रेड", "ब्लॉक"],
+    keywords: ["unfc", "reserve", "tonnage", "resource", "111", "122", "333", "grade", "3d", "block", "भंडार", "संसाधन", "टन", "ग्रेड", "ब्लॉक", "kitna", "bhandar"],
     replyEn: `OreSeek calculates a total in-situ geological reserve of **14.8 Million Tonnes (Mt)** with **82% Kriging Confidence** across the Sausar Belt:
 
 **UNFC Standard Breakdown:**
@@ -105,14 +105,14 @@ const KNOWLEDGE_RESPONSES: KnowledgeItem[] = [
 • **UNFC 333 (Inferred Resource)**: **3.2 Mt** @ **22.5% Mn** (Satellite spectral & magnetic anomaly extrapolation)
 
 The 3D Maptek-style voxel engine supports real-time cutoff grade filtering between 15% and 45% Mn.`,
-    replyHi: `ओरसीक सौसर बेल्ट में **82% क्रिगिंग विश्वास** के साथ कुल **14.8 मिलियन टन (Mt)** भूगर्भीय भंडार की गणना करता है:
+    replyHi: `ओरसीक सौसर बेल्ट में **82% क्रिगिंग विश्वास** के साथ कुल **14.8 मिलियन टन** भूगर्भीय भंडार का आकलन करता है:
 
 **UNFC मानक वर्गीकरण:**
-• **UNFC 111 (प्रमाणित / मेजर्ड)**: **6.2 Mt** @ **36.4% Mn** (50 मीटर सघन ड्रिलिंग)
-• **UNFC 122 (संभावित / इंडिकेटेड)**: **5.4 Mt** @ **29.8% Mn** (100 मीटर ड्रिलिंग)
-• **UNFC 333 (अनुमानित / इन्फर्ड)**: **3.2 Mt** @ **22.5% Mn** (उपग्रह स्पेक्ट्रल एक्सट्रापोलेशन)
+• **UNFC 111 (प्रमाणित भंडार)**: **6.2 मिलियन टन** @ **36.4% मैंगनीज** (50 मीटर सघन ड्रिलिंग)
+• **UNFC 122 (संभावित भंडार)**: **5.4 मिलियन टन** @ **29.8% मैंगनीज** (100 मीटर ड्रिलिंग)
+• **UNFC 333 (अनुमानित संसाधन)**: **3.2 मिलियन टन** @ **22.5% मैंगनीज** (उपग्रह स्पेक्ट्रल अनुमान)
 
-3D वोक्सेल इंजन 15% से 45% Mn के बीच वास्तविक समय कटऑफ ग्रेड फ़िल्टरिंग का समर्थन करता है।`,
+3D वोक्सेल इंजन 15% से 45% मैंगनीज कटऑफ ग्रेड फ़िल्टरिंग का समर्थन करता है।`,
     actionsEn: [
       { label: "🧊 Open 3D Voxel Block Model", path: "/resources" },
       { label: "📊 View Production Trajectory", path: "/production" }
@@ -123,7 +123,7 @@ The 3D Maptek-style voxel engine supports real-time cutoff grade filtering betwe
     ]
   },
   {
-    keywords: ["equipment", "machine", "excavator", "dumper", "drill", "maintenance", "telemetry", "rul", "उपकरण", "मशीन", "उत्खनन", "डंपर", "रखरखाव"],
+    keywords: ["equipment", "machine", "excavator", "dumper", "drill", "maintenance", "telemetry", "rul", "breakdown", "उपकरण", "मशीन", "उत्खनन", "डंपर", "रखरखाव", "खराबी"],
     replyEn: `Live HEMM telematics monitoring tracks **12 active mining assets**:
 
 ⚠️ **Critical Alerts:**
@@ -132,14 +132,14 @@ The 3D Maptek-style voxel engine supports real-time cutoff grade filtering betwe
 
 ✅ **Recommended Workflow:**
 Reallocate standby unit **EXC-01** (89.5% avail) to Pit Floor 4 immediately while sending EXC-02 to the central workshop.`,
-    replyHi: `लाइव HEMM टेलीमैटिक्स मॉनिटरिंग **12 सक्रिय खनन संपत्तियों** को ट्रैक करता है:
+    replyHi: `लाइव उपकरण टेलीमैटिक्स **12 सक्रिय खनन मशीनों** की निगरानी कर रहा है:
 
 ⚠️ **गंभीर चेतावनियां:**
-• **EXC-02 (उत्खननकर्ता - डोंगरी बुजुर्ग)**: उपलब्धता घटकर **68.2%**। हाइड्रोलिक दबाव अस्थिर (4.8 बार)। **64 दिन से लंबित**। शेष उपयोगी जीवन (RUL): **18 परिचालन घंटे**।
-• **DRL-02 (ड्रिल रिग - डोंगरी बुजुर्ग)**: उपलब्धता **72.0%**। बेयरिंग कंपन वृद्धि (3.8 mm/s)।
+• **EXC-02 (उत्खननकर्ता - डोंगरी बुजुर्ग)**: उपलब्धता घटकर **68.2%**। हाइड्रोलिक दबाव में उतार-चढ़ाव। **64 दिनों से लंबित**। शेष जीवन (RUL): **18 घंटे**।
+• **DRL-02 (ड्रिल रिग - डोंगरी बुजुर्ग)**: उपलब्धता **72.0%**। बेयरिंग कंपन वृद्धि (3.8 मिमी/सेकंड)।
 
-✅ **अनुशंसित कार्यप्रवाह:**
-स्टैंडबाय यूनिट **EXC-01** (89.5% उपलब्धता) को तुरंत पिट फ्लोर 4 पर पुनः आवंटित करें तथा EXC-02 को कार्यशाला भेजें।`,
+✅ **अनुशंसित कार्य:**
+स्टैंडबाय मशीन **EXC-01** (89.5% उपलब्धता) को तुरंत पिट फ्लोर 4 पर लगाएं तथा EXC-02 को कार्यशाला भेजें।`,
     actionsEn: [
       { label: "🚜 Open Equipment Telematics", path: "/equipment" },
       { label: "⚡ Run Fleet Simulator", path: "/simulator" }
@@ -158,13 +158,13 @@ Reallocate standby unit **EXC-01** (89.5% avail) to Pit Floor 4 immediately whil
 2. **Clay Mineral Alteration**: $\\text{Band 11 (SWIR-1)} / \\text{Band 12 (SWIR-2)}$ — Pinpoints hydrothermal alteration haloes.
 3. **Ferrous Silicate Ratio**: $\\text{Band 11 (SWIR-1)} / \\text{Band 8 (NIR)}$ — Separates Gondite ore from barren schist.
 4. **Environmental NDVI Tracking**: Monitored at 10m resolution for environmental ESG compliance.`,
-    replyHi: `ओरसीक **ESA सेंटिनल-2, USGS लैंडसैट-8/9 एवं ISRO MOSDAC** से पृथ्वी अवलोकन डेटा प्रोसेस करता है:
+    replyHi: `ओरसीक **ESA सेंटिनल-2, USGS लैंडसैट-8/9 एवं ISRO MOSDAC** उपग्रहों से पृथ्वी अवलोकन डेटा प्रोसेस करता है:
 
 **मैंगनीज अन्वेषण हेतु मुख्य स्पेक्ट्रल अनुपात:**
-1. **आयरन ऑक्साइड सूचकांक**: $\\text{बैंड 4 (लाल)} / \\text{बैंड 2 (नीला)}$ — ऑक्सीकृत मैंगनीज कैप्स की पहचान।
-2. **क्ले खनिज परिवर्तन**: $\\text{बैंड 11 (SWIR-1)} / \\text{बैंड 12 (SWIR-2)}$ — हाइड्रोथर्मल हेलो की पहचान।
-3. **फेरस सिलिकेट अनुपात**: $\\text{बैंड 11 (SWIR-1)} / \\text{बैंड 8 (NIR)}$ — गोंडाइट अयस्क को बंजर शिस्ट से अलग करता है।
-4. **पर्यावरणीय NDVI ट्रैकिंग**: ESG अनुपालन हेतु 10 मीटर रिज़ॉल्यूशन पर निगरानी।`,
+1. **आयरन ऑक्साइड सूचकांक**: $\\text{बैंड 4} / \\text{बैंड 2}$ — ऑक्सीकृत मैंगनीज कैप्स की पहचान।
+2. **क्ले खनिज परिवर्तन**: $\\text{बैंड 11} / \\text{बैंड 12}$ — हाइड्रोथर्मल विसंगति की पहचान।
+3. **फेरस सिलिकेट अनुपात**: $\\text{बैंड 11} / \\text{बैंड 8}$ — गोंडाइट अयस्क को बंजर चट्टानों से अलग करता है।
+4. **पर्यावरणीय NDVI**: ESG अनुपालन हेतु 10 मीटर रिज़ॉल्यूशन पर निगरानी।`,
     actionsEn: [
       { label: "🛰️ Open Satellite Exploration GIS", path: "/exploration" },
       { label: "🌱 View Environmental NDVI", path: "/environment" }
@@ -183,13 +183,13 @@ Reallocate standby unit **EXC-01** (89.5% avail) to Pit Floor 4 immediately whil
 2. **Quantify**: 3D UNFC block modelling provides JORC-compliant resource estimation.
 3. **Forecast**: XGBoost predicts production trajectories and provides 14-30 day shortfall early warnings.
 4. **Mitigate**: Interactive What-If simulation optimizes fleet allocations, blast patterns, and ore blending.`,
-    replyHi: `**ओरसीक** को विशेष रूप से **SIH 2026 समस्या विवरण PS-26009 (इस्पात मंत्रालय / मॉयल लिमिटेड)** के लिए तैयार किया गया है:
+    replyHi: `**ओरसीक** को विशेष रूप से **SIH 2026 समस्या विवरण PS-26009 (इस्पात मंत्रालय / मॉयल लिमिटेड)** हेतु तैयार किया गया है:
 
-**प्लेटफ़ॉर्म के मुख्य स्तंभ:**
-1. **खोज**: अंतरिक्ष-आधारित संभावना सौसर फोल्ड बेल्ट में नए मैंगनीज क्षितिजों की पहचान करती है।
-2. **मात्रा निर्धारण**: 3D UNFC ब्लॉक मॉडलिंग सटीक संसाधन अनुमान प्रदान करती है।
-3. **पूर्वानुमान**: XGBoost उत्पादन में 14-30 दिन पूर्व कमी की चेतावनी देता है।
-4. **सुधार**: सिम्युलेटर फ्लीट आवंटन, ब्लास्ट डिजाइन और अयस्क सम्मिश्रण को अनुकूलित करता है।`,
+**प्लेटफ़ॉर्म के चार मुख्य आधार:**
+1. **अन्वेषण**: अंतरिक्ष उपग्रह डेटा द्वारा सौसर बेल्ट में नए मैंगनीज क्षेत्रों की खोज।
+2. **मात्रा निर्धारण**: 3D UNFC ब्लॉक मॉडलिंग द्वारा सटीक संसाधन आकलन।
+3. **पूर्वानुमान**: XGBoost द्वारा 14 से 30 दिन पूर्व उत्पादन कमी की चेतावनी।
+4. **सुधार**: सिम्युलेटर द्वारा फ्लीट प्रबंधन, ब्लास्टिंग और अयस्क सम्मिश्रण का अनुकूलन।`,
     actionsEn: [
       { label: "📄 Open Executive PDF Report", actionType: "report" },
       { label: "🎯 Start Judge Demo Tour", actionType: "tour" }
@@ -206,9 +206,16 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [inputQuery, setInputQuery] = useState('')
+  const [interimSpeech, setInterimSpeech] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+
+  const silenceTimerRef = useRef<any>(null)
+  const chatEndRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const synthRef = useRef<SpeechSynthesis | null>(null)
+  const recognitionRef = useRef<any>(null)
 
   const getInitialWelcomeMessage = (currentLang: 'en' | 'hi'): Message => ({
     id: 'welcome',
@@ -228,12 +235,7 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
 
   const [messages, setMessages] = useState<Message[]>([getInitialWelcomeMessage(lang)])
 
-  const chatEndRef = useRef<HTMLDivElement>(null)
-  const navigate = useNavigate()
-  const synthRef = useRef<SpeechSynthesis | null>(null)
-  const recognitionRef = useRef<any>(null)
-
-  // Update welcome message if chat hasn't started yet when lang changes
+  // Update welcome message on language change if chat is clean
   useEffect(() => {
     if (messages.length === 1 && messages[0].id === 'welcome') {
       setMessages([getInitialWelcomeMessage(lang)])
@@ -242,7 +244,7 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isTyping, isOpen])
+  }, [messages, isTyping, isOpen, interimSpeech])
 
   useEffect(() => {
     const handleOpenEvent = () => {
@@ -253,27 +255,70 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
     return () => window.removeEventListener('open-oreseek-copilot', handleOpenEvent)
   }, [])
 
+  // Initialize Speech Synthesis and Enhanced Continuous Speech Recognition
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       synthRef.current = window.speechSynthesis
     }
 
-    // Voice recognition setup
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition()
-      recognition.continuous = false
-      recognition.interimResults = false
+      recognition.continuous = true
+      recognition.interimResults = true
       recognition.lang = lang === 'hi' ? 'hi-IN' : 'en-US'
+      recognition.maxAlternatives = 1
+
       recognition.onresult = (e: any) => {
-        const transcript = e.results[0][0].transcript
-        setInputQuery(transcript)
-        setIsListening(false)
-        handleSend(transcript)
+        let interimText = ''
+        let finalText = ''
+
+        for (let i = e.resultIndex; i < e.results.length; ++i) {
+          const transcript = e.results[i][0].transcript
+          if (e.results[i].isFinal) {
+            finalText += transcript
+          } else {
+            interimText += transcript
+          }
+        }
+
+        const currentText = (finalText || interimText).trim()
+        if (currentText) {
+          setInputQuery(currentText)
+          setInterimSpeech(interimText)
+        }
+
+        // Reset silence timer on new voice input
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
+        
+        // Auto-finalize and send if user pauses for 1.8 seconds after speaking
+        if (currentText.length > 2) {
+          silenceTimerRef.current = setTimeout(() => {
+            if (recognitionRef.current) {
+              try { recognitionRef.current.stop() } catch (_) {}
+            }
+            setIsListening(false)
+            setInterimSpeech('')
+            handleSend(currentText)
+          }, 1800)
+        }
       }
-      recognition.onerror = () => setIsListening(false)
-      recognition.onend = () => setIsListening(false)
+
+      recognition.onerror = () => {
+        setIsListening(false)
+        setInterimSpeech('')
+      }
+      
+      recognition.onend = () => {
+        setIsListening(false)
+        setInterimSpeech('')
+      }
+
       recognitionRef.current = recognition
+    }
+
+    return () => {
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
     }
   }, [lang])
 
@@ -282,11 +327,21 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
       alert(lang === 'hi' ? "इस ब्राउज़र में वाक् पहचान (Speech Recognition) समर्थित नहीं है।" : "Speech recognition is not supported in this browser.")
       return
     }
+
     if (isListening) {
-      recognitionRef.current.stop()
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
+      try { recognitionRef.current.stop() } catch (_) {}
       setIsListening(false)
+      setInterimSpeech('')
+      if (inputQuery.trim()) {
+        handleSend(inputQuery)
+      }
     } else {
       try {
+        if (synthRef.current) synthRef.current.cancel()
+        setIsSpeaking(false)
+        setInputQuery('')
+        setInterimSpeech('')
         recognitionRef.current.lang = lang === 'hi' ? 'hi-IN' : 'en-US'
         recognitionRef.current.start()
         setIsListening(true)
@@ -294,6 +349,38 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
         setIsListening(false)
       }
     }
+  }
+
+  // Pre-process text to convert abbreviations and decimals into natural, phonetically smooth spoken words
+  const cleanTextForSpeech = (rawText: string, currentLang: string): string => {
+    let clean = rawText
+      .replace(/[*#`$_]/g, '')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+      .replace(/•/g, ', ')
+
+    if (currentLang === 'hi') {
+      clean = clean
+        .replace(/UNFC 111/gi, 'यू एन एफ सी एक सौ ग्यारह')
+        .replace(/UNFC 122/gi, 'यू एन एफ सी एक सौ बाईस')
+        .replace(/UNFC 333/gi, 'यू एन एफ सी तीन सौ तैंतीस')
+        .replace(/14\.8\s*Mt/gi, 'चौदह दशमलव आठ मिलियन टन')
+        .replace(/31\.2%/g, 'इकतीस दशमलव दो प्रतिशत')
+        .replace(/36\.4%/g, 'छत्तीस दशमलव चार प्रतिशत')
+        .replace(/29\.8%/g, 'उनतीस दशमलव आठ प्रतिशत')
+        .replace(/22\.5%/g, 'बाईस दशमलव पांच प्रतिशत')
+        .replace(/68%/g, 'अड़सठ प्रतिशत')
+        .replace(/9\.4%/g, 'नौ दशमलव चार प्रतिशत')
+        .replace(/22,400/g, 'बाईस हज़ार चार सौ')
+        .replace(/EXC-02/gi, 'उत्खननकर्ता ई-एक्स-सी दो')
+        .replace(/EXC-01/gi, 'उत्खननकर्ता ई-एक्स-सी एक')
+        .replace(/DRL-02/gi, 'ड्रिल डी-आर-एल दो')
+        .replace(/XGBoost/gi, 'एक्स-जी-बूस्ट मॉडल')
+        .replace(/SHAP/gi, 'शॉप मॉडल')
+        .replace(/km²/gi, 'वर्ग किलोमीटर')
+        .replace(/Mn/g, 'मैंगनीज')
+    }
+
+    return clean
   }
 
   const speakText = (text: string) => {
@@ -305,12 +392,11 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
     }
 
     synthRef.current.cancel()
-    // Clean markdown symbols for natural speech
-    const clean = text.replace(/[*#•`$]/g, '').replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    const clean = cleanTextForSpeech(text, lang)
     const utterance = new SpeechSynthesisUtterance(clean)
     utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-US'
-    utterance.rate = lang === 'hi' ? 0.95 : 1.00
-    utterance.pitch = 1.15 // Fine-tuned feminine executive tone
+    utterance.rate = lang === 'hi' ? 0.90 : 1.00
+    utterance.pitch = lang === 'hi' ? 1.10 : 1.15
 
     const voices = synthRef.current.getVoices()
     if (lang === 'hi') {
@@ -350,10 +436,10 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
     // Default fallback generator
     if (lang === 'hi') {
       return {
-        reply: `वर्तमान **ओरसीक आसूचना डेटा** के आधार पर:
-• **प्राथमिकता अन्वेषण**: बालाघाट उत्तर (91%) और सीतासावंगी उत्तर (88%) प्राथमिक उच्च-ग्रेड लक्ष्य हैं।
-• **भंडार आधार**: JORC/UNFC 111 और 122 वर्गीकरण में 14.8 मिलियन टन अनुमानित मैंगनीज।
-• **परिचालन चेतावनी**: 68% मानसून उत्पादन कमी का जोखिम सक्रिय। उत्खननकर्ता पुनः आवंटन और 60:40 सम्मिश्रण द्वारा **+9.4% क्षमता भरपाई** संभव है।`,
+        reply: `वर्तमान **ओरसीक आसूचना डेटा** के अनुसार:
+• **अन्वेषण प्राथमिकता**: बालाघाट उत्तर (91%) और सीतासावंगी उत्तर (88%) मुख्य उच्च-ग्रेड लक्ष्य हैं।
+• **कुल भंडार**: UNFC 111 और 122 मानकों में 14.8 मिलियन टन मैंगनीज प्रमाणित।
+• **परिचालन जोखिम**: मानसून के कारण 68% उत्पादन कमी का जोखिम सक्रिय। उत्खननकर्ता स्टैंडबाय पुनः आवंटन और 60:40 सम्मिश्रण द्वारा **+9.4% उत्पादन भरपाई** संभव है।`,
         actions: [
           { label: "📊 कमांड सेंटर खोलें", path: "/dashboard" },
           { label: "🎛️ व्हाट-इफ सिम्युलेटर चलाएं", path: "/simulator" }
@@ -377,6 +463,9 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
     const query = (textToSend || inputQuery).trim()
     if (!query) return
 
+    if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
+    setInterimSpeech('')
+
     const userMsg: Message = {
       id: Date.now().toString(),
       sender: 'user',
@@ -399,7 +488,7 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
       }
       setMessages(prev => [...prev, assistantMsg])
       setIsTyping(false)
-    }, 600)
+    }, 550)
   }
 
   const handleActionClick = (action: { label: string; path?: string; actionType?: string }) => {
@@ -415,6 +504,8 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
   const handleResetChat = () => {
     if (synthRef.current) synthRef.current.cancel()
     setIsSpeaking(false)
+    if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
+    setInterimSpeech('')
     setMessages([
       {
         id: Date.now().toString(),
@@ -579,6 +670,26 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
                 <div ref={chatEndRef} />
               </div>
 
+              {/* Live Microphone Visualizer Banner (When Speaking) */}
+              {isListening && (
+                <div className="px-4 py-2 bg-gradient-to-r from-red-950/80 via-bg-900 to-red-950/80 border-t border-red-500/40 flex items-center justify-between animate-pulse">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-3 h-3 rounded-full bg-red-500 animate-ping flex-shrink-0"></div>
+                    <div className="text-[11px] text-red-300 font-medium truncate">
+                      {lang === 'hi' ? '🎙️ सुन रहा हूँ... बोलिए' : '🎙️ Listening... speak now'}
+                      {interimSpeech && <span className="text-white ml-1 font-bold">"{interimSpeech}"</span>}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleVoiceInput}
+                    className="px-2.5 py-0.5 rounded bg-red-500 text-white text-[10px] font-bold flex-shrink-0 hover:bg-red-600 transition-colors"
+                  >
+                    {lang === 'hi' ? 'भेजें (Send)' : 'Send Voice'}
+                  </button>
+                </div>
+              )}
+
               {/* Starter Prompt Chips */}
               <div className="px-3 py-2 bg-bg-950/60 border-t border-surface-border overflow-x-auto no-scrollbar flex items-center gap-1.5">
                 <span className="text-[10px] font-bold text-accent-orange uppercase flex-shrink-0 flex items-center gap-1 mr-1">
@@ -609,14 +720,18 @@ export default function OreSeekCopilot({ onOpenReport, onOpenTour }: { onOpenRep
                       type="text"
                       value={inputQuery}
                       onChange={(e) => setInputQuery(e.target.value)}
-                      placeholder={t('copilotPlaceholder')}
-                      className="w-full py-2 pl-3 pr-9 text-xs bg-bg-900 border border-surface-border rounded-xl text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent-orange transition-colors"
+                      placeholder={isListening ? (lang === 'hi' ? 'बोलिए, आपकी आवाज़ रिकॉर्ड हो रही है...' : 'Listening to your voice...') : t('copilotPlaceholder')}
+                      className={`w-full py-2 pl-3 pr-9 text-xs bg-bg-900 border rounded-xl text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
+                        isListening ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.25)]' : 'border-surface-border focus:border-accent-orange'
+                      }`}
                     />
                     <button
                       type="button"
                       onClick={handleVoiceInput}
-                      className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md transition-colors ${
-                        isListening ? 'text-red-400 animate-pulse' : 'text-text-muted hover:text-text-primary'
+                      className={`absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all ${
+                        isListening 
+                          ? 'bg-red-500 text-white animate-bounce shadow-md' 
+                          : 'text-text-muted hover:text-accent-orange hover:bg-surface-muted'
                       }`}
                       title={isListening ? t('copilotListening') : "Speak query"}
                     >

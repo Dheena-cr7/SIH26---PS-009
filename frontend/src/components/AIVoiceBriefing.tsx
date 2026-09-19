@@ -25,7 +25,8 @@ export default function AIVoiceBriefing() {
 
   const briefingTextEn = `Welcome to OreSeek AI Situation Room. Geological prospectivity models integrated with Sentinel-2 and Landsat spectral data have delineated fourteen point eight million tonnes of estimated manganese resources in the central Sausar belt. Our production forecasting model predicts a sixty-eight percent probability of a twenty-two thousand tonne production shortfall next quarter, driven by monsoon haulage delays and excavator fleet degradation. Three prescriptive AI mitigation actions are active to recover up to nine point four percent capacity. All systems and Heavy Earth Moving telemetry are streaming live.`
 
-  const briefingTextHi = `ओरसीक एआई स्थिति कक्ष में आपका स्वागत है। सेंटिनल-2 और लैंडसैट स्पेक्ट्रल डेटा के साथ एकीकृत भूवैज्ञानिक संभावना मॉडल ने केंद्रीय सौसर बेल्ट में 14.8 मिलियन टन अनुमानित मैंगनीज संसाधनों की पहचान की है। हमारा उत्पादन पूर्वानुमान मॉडल मानसून परिवहन देरी और उत्खनन बेड़े की खराबी के कारण अगली तिमाही में 22 हजार टन उत्पादन कमी की 68 प्रतिशत संभावना बताता है। क्षमता को 9.4 प्रतिशत तक पुनः प्राप्त करने के लिए 3 उपचारात्मक एआई कार्रवाइयां सक्रिय हैं। सभी सिस्टम और उपकरण टेलीमैटिक्स लाइव स्ट्रीम हो रहे हैं।`
+  // Clean Devanagari phonetics with natural punctuation and spelled-out numerals for smooth speech synthesis
+  const briefingTextHi = `ओरसीक एआई स्थिति कक्ष में आपका स्वागत है। सेंटिनल और लैंडसैट उपग्रह डेटा द्वारा केंद्रीय सौसर बेल्ट में चौदह दशमलव आठ मिलियन टन अनुमानित मैंगनीज भंडार की पहचान की गई है। हमारा उत्पादन पूर्वानुमान मॉडल मानसून परिवहन और मशीनरी खराबी के कारण अगली तिमाही में अड़सठ प्रतिशत जोखिम और बाईस हज़ार टन उत्पादन कमी का अनुमान लगाता है। नौ दशमलव चार प्रतिशत क्षमता की भरपाई के लिए तीन उपचारात्मक एआई कार्ययोजनाएं सक्रिय हैं। सभी उपकरण और खदान टेलीमैटिक्स लाइव स्ट्रीम हो रहे हैं।`
 
   const briefingText = lang === 'hi' ? briefingTextHi : briefingTextEn
 
@@ -141,8 +142,8 @@ export default function AIVoiceBriefing() {
       synthRef.current.cancel()
       const utterance = new SpeechSynthesisUtterance(briefingText)
       utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-US'
-      utterance.rate = lang === 'hi' ? 0.95 : 1.00
-      utterance.pitch = 1.16 // Fine-tuned feminine pitch for clear, pleasant executive narrator tone
+      utterance.rate = lang === 'hi' ? 0.90 : 1.00
+      utterance.pitch = lang === 'hi' ? 1.10 : 1.16
 
       const allVoices = synthRef.current.getVoices()
       const targetVoice = allVoices.find(v => v.name === selectedVoiceName) || findStrictFemaleVoice(allVoices, lang)
